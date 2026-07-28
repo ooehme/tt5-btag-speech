@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MDB\Tests;
 
+use MDB\BundestagSpeeches\Article_Parser;
 use MDB\BundestagSpeeches\List_Parser;
 use MDB\BundestagSpeeches\Source_Client;
 use MDB\BundestagSpeeches\URL_Resolver;
@@ -13,10 +14,17 @@ use WP_Error;
 
 final class SourceClientTest extends TestCase {
 	public function test_expected_speech_record(): void {
-		$GLOBALS['mdb_http_get'] = array(
-			'response' => array( 'code' => 200 ),
-			'headers'  => array( 'content-type' => 'text/html; charset=utf-8' ),
-			'body'     => (string) file_get_contents( dirname( __DIR__ ) . '/fixtures/video-7654763.html' ),
+		$GLOBALS['mdb_http_get_queue'] = array(
+			array(
+				'response' => array( 'code' => 200 ),
+				'headers'  => array( 'content-type' => 'text/html; charset=utf-8' ),
+				'body'     => (string) file_get_contents( dirname( __DIR__ ) . '/fixtures/video-7654763.html' ),
+			),
+			array(
+				'response' => array( 'code' => 200 ),
+				'headers'  => array( 'content-type' => 'text/html; charset=utf-8' ),
+				'body'     => (string) file_get_contents( dirname( __DIR__ ) . '/fixtures/article-1184344.html' ),
+			),
 		);
 
 		$result = $this->client()->speech( '7654763' );
@@ -28,6 +36,12 @@ final class SourceClientTest extends TestCase {
 		self::assertSame( '25.06.2026', $result['date'] );
 		self::assertSame( '86. Sitzung', $result['session'] );
 		self::assertSame( 'TOP 24', $result['topic'] );
+		self::assertStringContainsString( '/kw26-de-cybersicherheit-1184344', $result['article_url'] );
+		self::assertSame(
+			'Regierungsentwurf zur Stärkung der Cybersicherheit beraten',
+			$result['article_title']
+		);
+		self::assertStringContainsString( '/resource/image/1184450/', $result['article_image_url'] );
 	}
 
 	public function test_parser_drift_becomes_wp_error(): void {
@@ -44,6 +58,6 @@ final class SourceClientTest extends TestCase {
 
 	private function client(): Source_Client {
 		$urls = new URL_Resolver();
-		return new Source_Client( $urls, new List_Parser(), new Video_Parser() );
+		return new Source_Client( $urls, new List_Parser(), new Video_Parser(), new Article_Parser() );
 	}
 }

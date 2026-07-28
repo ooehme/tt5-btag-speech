@@ -15,13 +15,16 @@ final class Speech_Repository {
 	 * @var array<string,string>
 	 */
 	private const META_MAP = array(
-		'title'        => '_mdb_source_title',
-		'source_url'   => '_mdb_source_url',
-		'embed_url'    => '_mdb_embed_url',
-		'download_url' => '_mdb_download_url',
-		'session'      => '_mdb_session',
-		'topic'        => '_mdb_topic',
-		'date'         => '_mdb_source_date',
+		'title'             => '_mdb_source_title',
+		'source_url'        => '_mdb_source_url',
+		'embed_url'         => '_mdb_embed_url',
+		'download_url'      => '_mdb_download_url',
+		'article_url'       => '_mdb_article_url',
+		'article_title'     => '_mdb_article_title',
+		'article_image_url' => '_mdb_article_image_url',
+		'session'           => '_mdb_session',
+		'topic'             => '_mdb_topic',
+		'date'              => '_mdb_source_date',
 	);
 
 	public function find_by_video_id( string $video_id ): int {
@@ -84,7 +87,11 @@ final class Speech_Repository {
 		}
 
 		foreach ( self::META_MAP as $field => $meta_key ) {
-			$value = in_array( $field, array( 'source_url', 'embed_url', 'download_url' ), true )
+			$value = in_array(
+				$field,
+				array( 'source_url', 'embed_url', 'download_url', 'article_url', 'article_image_url' ),
+				true
+			)
 				? esc_url_raw( (string) ( $speech[ $field ] ?? '' ) )
 				: sanitize_text_field( (string) ( $speech[ $field ] ?? '' ) );
 			update_post_meta( $post_id, $meta_key, $value );

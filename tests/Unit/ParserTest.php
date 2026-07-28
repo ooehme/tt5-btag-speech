@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MDB\Tests;
 
 use MDB\BundestagSpeeches\List_Parser;
+use MDB\BundestagSpeeches\Article_Parser;
 use MDB\BundestagSpeeches\Parser_Exception;
 use MDB\BundestagSpeeches\Video_Parser;
 use PHPUnit\Framework\TestCase;
@@ -29,6 +30,21 @@ final class ParserTest extends TestCase {
 		self::assertSame( '25.06.2026', $result['date'] );
 		self::assertSame( '86. Sitzung', $result['session'] );
 		self::assertSame( 'TOP 24', $result['topic'] );
+		self::assertSame(
+			'/dokumente/textarchiv/2026/kw26-de-cybersicherheit-1184344',
+			$result['article_url']
+		);
+	}
+
+	public function test_article_fixture(): void {
+		$html   = (string) file_get_contents( dirname( __DIR__ ) . '/fixtures/article-1184344.html' );
+		$result = ( new Article_Parser() )->parse( $html );
+
+		self::assertSame(
+			'Regierungsentwurf zur Stärkung der Cybersicherheit beraten',
+			$result['article_title']
+		);
+		self::assertStringContainsString( '/resource/image/1184450/', $result['article_image_url'] );
 	}
 
 	public function test_structure_errors_are_explicit(): void {

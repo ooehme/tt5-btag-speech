@@ -103,7 +103,7 @@
 		icon: 'video-alt3',
 		category: 'mdb-speeches',
 		attributes: videoAttributes,
-		usesContext: ['postId', 'postType'],
+		usesContext: ['postId', 'postType', 'mdb/useArticleImage'],
 		edit: videoEdit,
 		save: () => null,
 	});

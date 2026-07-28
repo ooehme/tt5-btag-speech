@@ -19,6 +19,8 @@ final class RendererTest extends TestCase {
 				'_mdb_topic'       => 'TOP 24',
 				'_mdb_session'     => '86. Sitzung',
 				'_mdb_attachment_id' => '',
+				'_mdb_article_image_url' => 'https://www.bundestag.de/resource/image/1184450/article.jpg',
+				'_mdb_article_image_id' => '',
 			),
 		);
 		$GLOBALS['mdb_test_titles'][17] = 'Testrede';
@@ -46,6 +48,28 @@ final class RendererTest extends TestCase {
 		self::assertStringContainsString( '<iframe', $html );
 		self::assertStringContainsString( 'sandbox="allow-same-origin allow-scripts allow-forms allow-modals allow-popups"', $html );
 		self::assertStringContainsString( '--mdb-speech-aspect-ratio:16/9', $html );
+	}
+
+	public function test_article_image_is_used_as_remote_or_local_poster(): void {
+		$this->setUp();
+		$renderer = new Speech_Video_Renderer( new URL_Resolver() );
+		$context  = new WP_Block( array( 'postId' => 17, 'mdb/useArticleImage' => true ) );
+		$html     = $renderer->render(
+			array( 'source' => 'embed', 'display' => 'click_to_load' ),
+			'',
+			$context
+		);
+		self::assertStringContainsString( 'resource/image/1184450/article.jpg', $html );
+
+		$GLOBALS['mdb_test_meta'][17]['_mdb_article_image_id'] = 91;
+		$GLOBALS['mdb_test_attachments'][91] = 'https://example.test/uploads/article-local.jpg';
+		$html = $renderer->render(
+			array( 'source' => 'embed', 'display' => 'click_to_load' ),
+			'',
+			$context
+		);
+		self::assertStringContainsString( 'uploads/article-local.jpg', $html );
+		self::assertStringNotContainsString( 'resource/image/1184450/article.jpg', $html );
 	}
 
 	public function test_local_fallback_and_field_blocks(): void {

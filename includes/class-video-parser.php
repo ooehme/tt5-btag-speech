@@ -11,7 +11,7 @@ use DOMXPath;
 
 final class Video_Parser {
 	/**
-	 * @return array{video_id:string,title:string,date:string,session:string,topic:string}
+	 * @return array{video_id:string,title:string,date:string,session:string,topic:string,article_url:string}
 	 * @throws Parser_Exception When no reliable title is present.
 	 */
 	public function parse( string $html ): array {
@@ -66,15 +66,37 @@ final class Video_Parser {
 		$topic   = preg_match( '/\b(TOP\s+[A-Za-z0-9.\-\/]+(?:\s+[A-Za-z0-9.\-\/]+)?)\s*:/ui', $title, $matches )
 			? $this->normalize( $matches[1] )
 			: $this->breadcrumb_topic( $xpath );
-		$video_id = $this->video_id( $xpath );
+		$video_id   = $this->video_id( $xpath );
+		$article_url = $this->article_url( $xpath );
 
 		return array(
-			'video_id' => $video_id,
-			'title'   => $title,
-			'date'    => $date,
-			'session' => $session,
-			'topic'   => $topic,
+			'video_id'   => $video_id,
+			'title'      => $title,
+			'date'       => $date,
+			'session'    => $session,
+			'topic'      => $topic,
+			'article_url' => $article_url,
 		);
+	}
+
+	private function article_url( DOMXPath $xpath ): string {
+		foreach (
+			array(
+				'//main//a[contains(translate(normalize-space(.), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "zum artikel")]',
+				'//main//a[contains(@href, "/dokumente/textarchiv/")]',
+				'//a[contains(@href, "/dokumente/textarchiv/")]',
+			) as $query
+		) {
+			$nodes = $xpath->query( $query );
+			if ( false !== $nodes && $nodes->length > 0 && $nodes->item( 0 ) instanceof DOMElement ) {
+				$url = trim( $nodes->item( 0 )->getAttribute( 'href' ) );
+				if ( '' !== $url ) {
+					return $url;
+				}
+			}
+		}
+
+		return '';
 	}
 
 	private function video_id( DOMXPath $xpath ): string {

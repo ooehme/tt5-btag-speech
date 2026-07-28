@@ -4,7 +4,7 @@ Tags: bundestag, speeches, video, gutenberg, query loop
 Requires at least: 6.7
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,8 @@ Funktionen:
 * WP-Cron, Download-Wiederholung und WP-CLI
 * dynamische Video-, TOP-, Sitzungs- und Quellenblöcke
 * native Bundestagsreden-Variation von core/query
+* optionale Artikeltitel und Artikelbilder mit sicherem Fallback
+* begrenzter, deduplizierter Artikelbild-Import bei lokalen Videodownloads
 * Click-to-load ohne Player-Anfrage vor der Interaktion
 * Updates über versionierte GitHub-Release-ZIPs
 
@@ -49,6 +51,12 @@ Der Embed und der Link zur Originalquelle bleiben verfügbar. Fehlgeschlagene Do
 Plugin-Einstellungen, Locks und Cronjobs werden entfernt. Synchronisierte Beiträge und Medien bleiben als redaktionelle Inhalte erhalten.
 
 == Changelog ==
+
+= 1.1.0 =
+
+* Erweiterte Query-Darstellung mit Anzahl, Sortierung und Offset.
+* Optionale Artikeltitel und Artikelbilder mit Fallback.
+* Sicherer, deduplizierter Artikelbild-Import bei Videodownloads.
 
 = 1.0.0 =
 

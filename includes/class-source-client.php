@@ -9,10 +9,16 @@ use WP_Error;
 final class Source_Client {
 	private const MAX_HTML_BYTES = 5_000_000;
 
+	/**
+	 * @var array<string,array{article_title:string,article_image_url:string}>
+	 */
+	private array $article_cache = array();
+
 	public function __construct(
 		private URL_Resolver $urls,
 		private List_Parser $list_parser,
-		private Video_Parser $video_parser
+		private Video_Parser $video_parser,
+		private Article_Parser $article_parser
 	) {}
 
 	/**
@@ -60,6 +66,7 @@ final class Source_Client {
 		if ( '' !== (string) ( $metadata['video_id'] ?? '' ) && $video_id !== (string) $metadata['video_id'] ) {
 			return new WP_Error( 'mdb_video_mismatch', __( 'Die Bundestag-Videoseite gehört nicht zur angeforderten Video-ID.', 'mdb-bundestag-speeches' ) );
 		}
+		$metadata = $this->article_metadata( $metadata );
 
 		$metadata['video_id']     = $video_id;
 		$metadata['source_url']   = $this->urls->video_url( $video_id );
@@ -69,6 +76,69 @@ final class Source_Client {
 		} catch ( \InvalidArgumentException $exception ) {
 			return new WP_Error( 'mdb_invalid_quality', __( 'Die konfigurierte Videoqualität ist ungültig.', 'mdb-bundestag-speeches' ) );
 		}
+		return $metadata;
+	}
+
+	/**
+	 * Article metadata is optional; video metadata remains the fallback.
+	 *
+	 * @param array<string,string> $metadata Parsed video metadata.
+	 * @return array<string,string>
+	 */
+	private function article_metadata( array $metadata ): array {
+		$metadata['article_title']     = '';
+		$metadata['article_image_url'] = '';
+		$article_link                  = (string) ( $metadata['article_url'] ?? '' );
+		$metadata['article_url']       = '';
+
+		if ( '' === $article_link ) {
+			return $metadata;
+		}
+
+		try {
+			$article_url = $this->urls->absolute_bundestag_url( $article_link );
+		} catch ( \InvalidArgumentException $exception ) {
+			return $metadata;
+		}
+		$metadata['article_url'] = $article_url;
+
+		if ( isset( $this->article_cache[ $article_url ] ) ) {
+			return array_merge( $metadata, $this->article_cache[ $article_url ] );
+		}
+
+		$html = $this->get_html( $article_url );
+		if ( is_wp_error( $html ) ) {
+			$this->article_cache[ $article_url ] = array(
+				'article_title'     => '',
+				'article_image_url' => '',
+			);
+			return $metadata;
+		}
+
+		try {
+			$article = $this->article_parser->parse( $html );
+		} catch ( Parser_Exception $exception ) {
+			$this->article_cache[ $article_url ] = array(
+				'article_title'     => '',
+				'article_image_url' => '',
+			);
+			return $metadata;
+		}
+
+		$metadata['article_title'] = (string) ( $article['article_title'] ?? '' );
+		$image_url                = (string) ( $article['article_image_url'] ?? '' );
+		if ( '' !== $image_url ) {
+			try {
+				$metadata['article_image_url'] = $this->urls->absolute_bundestag_url( $image_url );
+			} catch ( \InvalidArgumentException $exception ) {
+				$metadata['article_image_url'] = '';
+			}
+		}
+		$this->article_cache[ $article_url ] = array(
+			'article_title'     => $metadata['article_title'],
+			'article_image_url' => $metadata['article_image_url'],
+		);
+
 		return $metadata;
 	}
 

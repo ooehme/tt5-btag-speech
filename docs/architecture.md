@@ -8,7 +8,7 @@ Das Plugin trennt Quelle, Persistenz, Synchronisierung, Download und Ausgabe. Es
 - `Settings` validiert Redner-ID, Intervall, Modus, Qualität und Größenlimit.
 - `URL_Resolver` erzeugt URLs nur aus validierten IDs und verwaltet die Host-Allowlist.
 - `Source_Client` kapselt begrenzte WordPress-HTTP-Anfragen.
-- `List_Parser` und `Video_Parser` lesen DOM-basiert mit mehreren kurzen Selektor-Fallbacks.
+- `List_Parser`, `Video_Parser` und `Article_Parser` lesen DOM-basiert mit mehreren kurzen Selektor-Fallbacks.
 - `Speech_Post_Type` registriert CPT und REST-sichtbare Metadaten.
 - `Speech_Repository` führt idempotente Upserts und Statusabfragen aus.
 - `Sync_Status` hält die Statusübergänge unabhängig vom WordPress-Speicher.
@@ -16,12 +16,15 @@ Das Plugin trennt Quelle, Persistenz, Synchronisierung, Download und Ausgabe. Es
 - `Sync_Lock` verhindert parallele Metadatenläufe.
 - `MP4_Validator` prüft Host, HTTP-Status, MIME-Type und Größe.
 - `Download_Service` streamt mit WordPress-Funktionen in die Mediathek.
+- `Article_Image_Importer` validiert, begrenzt und dedupliziert lokale Artikelbilder.
 - `Download_Lock` verhindert doppelte Attachments bei parallelen Jobs.
 - `Cron` plant Metadaten und einzelne Downloads getrennt.
 - `Admin` verarbeitet ausschließlich berechtigte, Nonce-geschützte Aktionen; die View ist separat.
 - `CLI` stellt die drei WP-CLI-Kommandos bereit.
 - `Blocks` registriert Block-Metadaten und Assets.
 - `Speech_Video_Renderer` rendert Player und Click-to-load.
+- `Query_Display` reicht die Darstellungsoptionen als Blockkontext weiter.
+- `Title_Display` ersetzt ausschließlich bei der Ausgabe Titel oder Redner-Suffixe.
 - `Block_Renderer` rendert die drei dynamischen Felder.
 - Editor-Blocktypen und Query-Variation liegen getrennt unter `assets/editor/`.
 - `Release_Updater` liest ausschließlich das neueste GitHub-Release und dessen benanntes ZIP-Asset.
@@ -32,11 +35,13 @@ Das Plugin trennt Quelle, Persistenz, Synchronisierung, Download und Ausgabe. Es
 2. Die Redenliste wird begrenzt abgerufen und geparst.
 3. Erst nach erfolgreichem Listen-Parsing werden bestehende Reden als `not_seen` markiert.
 4. Jede Videoseite wird separat abgerufen und geparst.
-5. `_mdb_video_id` dient als idempotenter Schlüssel.
-6. Quelldaten werden aktualisiert; `post_title` wird nur beim ersten Import gesetzt.
-7. Im Modus `automatic` werden einzelne Download-Cronjobs geplant.
-8. Fehler einer Rede stoppen nicht die übrige Synchronisierung.
-9. Fehlende Reden werden nie gelöscht.
+5. Ein optionaler Artikel-Link wird aufgelöst; Artikeltitel und Open-Graph-Bild werden gecacht geparst.
+6. `_mdb_video_id` dient als idempotenter Schlüssel.
+7. Quelldaten werden aktualisiert; `post_title` wird nur beim ersten Import gesetzt.
+8. Im Modus `automatic` werden einzelne Download-Cronjobs geplant.
+9. Beim Videodownload wird ein vorhandenes Artikelbild einmalig in die Mediathek übernommen.
+10. Fehler einer Rede stoppen nicht die übrige Synchronisierung.
+11. Fehlende Reden werden nie gelöscht.
 
 ## Statusmodell
 
@@ -57,13 +62,14 @@ Metadatenfehler und Downloadfehler bleiben getrennt. Eine erfolgreiche Metadaten
 - MP4-Validierung folgt keinen Redirects und akzeptiert ausschließlich `video/mp4`.
 - Der GET-Fallback überträgt mit `Range: bytes=0-0` höchstens ein Byte.
 - Nach dem Stream-Download prüft WordPress den tatsächlichen Dateityp erneut.
+- Artikelbilder sind auf Bundestag-Hosts, JPEG/PNG/WebP und 15 MB begrenzt.
 - Admin-Aktionen erfordern `manage_options` und eine aktionsspezifische Nonce.
 - Interne Fehler-, Download- und Statusmetadaten werden nicht öffentlich über REST exponiert.
 - Iframes erhalten eine Sandbox und werden im Click-to-load-Modus erst nach Interaktion erstellt.
 
 ## Parserdrift
 
-Die Parser verwenden mehrere kurze Fallbacks (`m-videos__headline h1`, `main h1`, `h1`, Open-Graph-Titel) statt eines langen DOM-Pfads. Wenn keine Rede oder kein Titel erkennbar ist, entsteht ein verständlicher `Parser_Exception`; eine leere Synchronisierung wird dadurch nicht als legitimer Zustand behandelt.
+Die Parser verwenden mehrere kurze Fallbacks (`m-videos__headline h1`, `main h1`, `h1`, Open-Graph-Titel) statt eines langen DOM-Pfads. Wenn keine Rede oder kein Titel erkennbar ist, entsteht ein verständlicher `Parser_Exception`; eine leere Synchronisierung wird dadurch nicht als legitimer Zustand behandelt. Optionale Artikelmetadaten fallen bei fehlenden Links oder Bildern auf die Videodaten zurück.
 
 ## Updates
 

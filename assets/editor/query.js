@@ -11,6 +11,9 @@
 		icon: 'video-alt3',
 		attributes: {
 			namespace: 'mdb/speeches',
+			mdbRemoveSpeakerFromTitle: true,
+			mdbUseArticleTitle: true,
+			mdbUseArticleImage: true,
 			query: {
 				perPage: 6,
 				pages: 0,
@@ -48,7 +51,7 @@
 			],
 			['core/query-no-results', {}, [['core/paragraph', { content: __('Keine Bundestagsreden gefunden.', 'mdb-bundestag-speeches') }]]],
 		],
-		allowedControls: ['order', 'search'],
+		allowedControls: ['search'],
 		scope: ['inserter'],
 		isActive: (attributes) => attributes.namespace === 'mdb/speeches',
 	});

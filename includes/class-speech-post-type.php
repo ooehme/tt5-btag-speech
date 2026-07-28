@@ -37,7 +37,15 @@ final class Speech_Post_Type {
 		foreach ( $this->metadata() as $key => $type ) {
 			$rest_visible = ! in_array(
 				$key,
-				array( '_mdb_download_url', '_mdb_attachment_id', '_mdb_sync_status', '_mdb_last_seen', '_mdb_last_error' ),
+				array(
+					'_mdb_download_url',
+					'_mdb_attachment_id',
+					'_mdb_article_image_id',
+					'_mdb_article_image_error',
+					'_mdb_sync_status',
+					'_mdb_last_seen',
+					'_mdb_last_error',
+				),
 				true
 			);
 			register_post_meta(
@@ -59,18 +67,23 @@ final class Speech_Post_Type {
 	 */
 	private function metadata(): array {
 		return array(
-			'_mdb_video_id'      => 'string',
-			'_mdb_source_title'  => 'string',
-			'_mdb_source_url'    => 'string',
-			'_mdb_embed_url'     => 'string',
-			'_mdb_download_url'  => 'string',
-			'_mdb_attachment_id' => 'integer',
-			'_mdb_session'       => 'string',
-			'_mdb_topic'         => 'string',
-			'_mdb_source_date'   => 'string',
-			'_mdb_sync_status'   => 'string',
-			'_mdb_last_seen'     => 'string',
-			'_mdb_last_error'    => 'string',
+			'_mdb_video_id'           => 'string',
+			'_mdb_source_title'       => 'string',
+			'_mdb_source_url'         => 'string',
+			'_mdb_embed_url'          => 'string',
+			'_mdb_download_url'       => 'string',
+			'_mdb_attachment_id'      => 'integer',
+			'_mdb_article_url'        => 'string',
+			'_mdb_article_title'      => 'string',
+			'_mdb_article_image_url'  => 'string',
+			'_mdb_article_image_id'   => 'integer',
+			'_mdb_article_image_error' => 'string',
+			'_mdb_session'            => 'string',
+			'_mdb_topic'              => 'string',
+			'_mdb_source_date'        => 'string',
+			'_mdb_sync_status'        => 'string',
+			'_mdb_last_seen'          => 'string',
+			'_mdb_last_error'         => 'string',
 		);
 	}
 }

@@ -12,6 +12,8 @@ Produktionsfähiges WordPress-Plugin zum Synchronisieren und Darstellen von Rede
 - `HEAD`-Prüfung mit begrenztem `Range: bytes=0-0`-Fallback
 - WP-Cron, Synchronisations- und Download-Locks sowie WP-CLI
 - dynamische Gutenberg-Blöcke und eine native `core/query`-Variation
+- optionale Artikeltitel und Artikelbilder mit sicherem Fallback auf die Videodaten
+- entfernte Artikelbilder im Embed-Modus, deduplizierter Bildimport bei lokalen Downloads
 - datenschutzfreundliche Click-to-load-Ausgabe
 - GitHub-Release-Updates, sobald Releases im Repository verfügbar sind
 
@@ -42,6 +44,8 @@ Verfügbar sind:
 - Query-Variation `mdb/speeches` für `core/query`
 
 Der Videoblock liest im Core Query Loop den aktuellen `postId`-Kontext. Das `core/post-template` bleibt frei gestaltbar; Pagination übernehmen die Core-Blöcke.
+
+Die Query-Variation bietet Darstellungsoptionen für Anzahl, Sortierung, Offset, gekürzte Redentitel, Artikeltitel und Artikelbilder. Fehlende Artikelmetadaten ändern die normale Ausgabe nicht.
 
 ## WP-CLI
 

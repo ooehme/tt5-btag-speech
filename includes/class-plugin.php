@@ -24,14 +24,21 @@ final class Plugin {
 		$settings   = new Settings();
 		$urls       = new URL_Resolver();
 		$repository = new Speech_Repository();
-		$source     = new Source_Client( $urls, new List_Parser(), new Video_Parser() );
+		$source     = new Source_Client( $urls, new List_Parser(), new Video_Parser(), new Article_Parser() );
 		$validator  = new MP4_Validator( $settings, $urls );
-		$downloads  = new Download_Service( $validator, $repository, new Download_Lock() );
+		$downloads  = new Download_Service(
+			$validator,
+			$repository,
+			new Download_Lock(),
+			new Article_Image_Importer( $urls )
+		);
 		$sync       = new Synchronizer( $settings, $source, $repository, new Sync_Lock() );
 
 		add_action( 'init', array( $this, 'load_textdomain' ), 0 );
 		add_action( 'admin_init', array( $settings, 'register' ) );
 
+		( new Query_Display() )->register();
+		( new Title_Display() )->register();
 		( new Speech_Post_Type() )->register();
 		( new Cron( $settings, $sync, $downloads ) )->register();
 		( new Blocks( new Speech_Video_Renderer( $urls ), new Block_Renderer() ) )->register();

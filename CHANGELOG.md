@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0 – 2026-07-28
+
+- Query-Darstellung mit Anzahl, Sortierung, Offset und optional gekürzten Redentiteln
+- optionale Artikeltitel und Artikelbilder aus dem verlinkten Bundestag-Artikel
+- begrenzter, MIME-geprüfter und deduplizierter Artikelbild-Import bei Videodownloads
+
 ## 1.0.0 – 2026-07-28
 
 - erster produktionsfähiger Stand

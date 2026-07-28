@@ -64,6 +64,21 @@ final class URL_Resolver {
 		return self::CDN_BASE . '/' . $video_id . '/' . rawurlencode( $file ) . '?fdl=1';
 	}
 
+	public function absolute_bundestag_url( string $url ): string {
+		$url = trim( html_entity_decode( $url, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+		if ( str_starts_with( $url, '//' ) ) {
+			$url = 'https:' . $url;
+		} elseif ( str_starts_with( $url, '/' ) ) {
+			$url = 'https://www.bundestag.de' . $url;
+		}
+
+		if ( ! $this->is_allowed_url( $url ) ) {
+			throw new InvalidArgumentException( 'Disallowed Bundestag URL.' );
+		}
+
+		return $url;
+	}
+
 	public function is_allowed_url( string $url ): bool {
 		$parts = wp_parse_url( $url );
 		if ( ! is_array( $parts ) || 'https' !== strtolower( (string) ( $parts['scheme'] ?? '' ) ) ) {

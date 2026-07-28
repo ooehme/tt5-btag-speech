@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MDB\Tests;
 
+use MDB\BundestagSpeeches\Article_Parser;
 use MDB\BundestagSpeeches\List_Parser;
 use MDB\BundestagSpeeches\URL_Resolver;
 use MDB\BundestagSpeeches\Video_Parser;
@@ -27,7 +28,16 @@ final class LiveEndpointsTest extends TestCase {
 		self::assertTrue( is_string( $list ) && '' !== $list, 'Live speech list unavailable.' );
 		self::assertTrue( is_string( $video ) && '' !== $video, 'Live video page unavailable.' );
 		self::assertTrue( count( ( new List_Parser() )->parse( $list ) ) > 0 );
-		self::assertSame( '86. Sitzung', ( new Video_Parser() )->parse( $video )['session'] );
+		$video_metadata = ( new Video_Parser() )->parse( $video );
+		self::assertSame( '86. Sitzung', $video_metadata['session'] );
+
+		$article_url = $urls->absolute_bundestag_url( $video_metadata['article_url'] );
+		$article     = $this->fetch( $article_url );
+		self::assertTrue( is_string( $article ) && '' !== $article, 'Live article page unavailable.' );
+		self::assertStringContainsString(
+			'Cybersicherheit',
+			( new Article_Parser() )->parse( $article )['article_title']
+		);
 	}
 
 	private function fetch( string $url ): string|false {

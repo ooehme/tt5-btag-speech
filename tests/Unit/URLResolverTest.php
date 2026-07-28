@@ -37,6 +37,21 @@ final class URLResolverTest extends TestCase {
 		self::assertStringContainsString( 'rednerIds=442354%2321244%20OR%2012404', $url );
 	}
 
+	public function test_relative_bundestag_urls_are_resolved_safely(): void {
+		$resolver = new URL_Resolver();
+		self::assertSame(
+			'https://www.bundestag.de/dokumente/textarchiv/example',
+			$resolver->absolute_bundestag_url( '/dokumente/textarchiv/example' )
+		);
+
+		try {
+			$resolver->absolute_bundestag_url( 'https://attacker.test/image.jpg' );
+			self::fail( 'Disallowed article URL accepted.' );
+		} catch ( InvalidArgumentException $exception ) {
+			self::assertStringContainsString( 'Disallowed', $exception->getMessage() );
+		}
+	}
+
 	public function test_host_allowlist_is_exact(): void {
 		$resolver = new URL_Resolver();
 		self::assertTrue( $resolver->is_allowed_url( 'https://cldf-od.r53.cdn.tv1.eu/video.mp4' ) );

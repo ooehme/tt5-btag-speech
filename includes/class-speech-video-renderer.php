@@ -25,10 +25,11 @@ final class Speech_Video_Renderer {
 				'aspectRatio' => '16/9',
 			)
 		);
-		$post_id    = $this->post_id( $block );
-		$source_url = (string) get_post_meta( $post_id, '_mdb_source_url', true );
-		$source     = $this->source( $post_id, (string) $attributes['source'] );
-		$wrapper    = get_block_wrapper_attributes( array( 'class' => 'mdb-speech-video' ) );
+		$post_id              = $this->post_id( $block );
+		$attributes['poster'] = $this->poster( $post_id, $attributes, $block );
+		$source_url           = (string) get_post_meta( $post_id, '_mdb_source_url', true );
+		$source               = $this->source( $post_id, (string) $attributes['source'] );
+		$wrapper              = get_block_wrapper_attributes( array( 'class' => 'mdb-speech-video' ) );
 
 		if ( 'link' === $attributes['display'] ) {
 			return sprintf(
@@ -77,6 +78,30 @@ final class Speech_Video_Renderer {
 			return array( 'kind' => 'local', 'url' => $local_url );
 		}
 		return array( 'kind' => 'embed', 'url' => $embed_url );
+	}
+
+	/**
+	 * @param array<string,mixed> $attributes Block attributes.
+	 */
+	private function poster( int $post_id, array $attributes, WP_Block $block ): string {
+		$custom = trim( (string) ( $attributes['poster'] ?? '' ) );
+		if ( '' !== $custom ) {
+			return $custom;
+		}
+		if ( empty( $block->context[ Query_Display::USE_ARTICLE_IMAGE_CONTEXT ] ) ) {
+			return '';
+		}
+
+		$attachment_id = (int) get_post_meta( $post_id, '_mdb_article_image_id', true );
+		if ( $attachment_id > 0 ) {
+			$local_url = wp_get_attachment_url( $attachment_id );
+			if ( is_string( $local_url ) && '' !== $local_url ) {
+				return $local_url;
+			}
+		}
+
+		$remote_url = (string) get_post_meta( $post_id, '_mdb_article_image_url', true );
+		return $this->urls->is_allowed_url( $remote_url ) ? $remote_url : '';
 	}
 
 	/**
