@@ -11,13 +11,13 @@
 		icon: 'video-alt3',
 		attributes: {
 			namespace: 'mdb/speeches',
-			mdbRemoveSpeakerFromTitle: true,
-			mdbUseArticleTitle: true,
-			mdbUseArticleImage: true,
 			query: {
 				perPage: 6,
 				pages: 0,
 				offset: 0,
+				mdbRemoveSpeakerFromTitle: true,
+				mdbUseArticleTitle: true,
+				mdbUseArticleImage: true,
 				postType: 'mdb_speech',
 				order: 'desc',
 				orderBy: 'date',

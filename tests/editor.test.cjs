@@ -72,9 +72,9 @@ const query = variations.find(({ block, settings }) => block === 'core/query' &&
 assert.ok(query, 'query variation is registered');
 assert.equal(query.settings.attributes.query.postType, 'mdb_speech');
 assert.equal(query.settings.attributes.query.orderBy, 'date');
-assert.equal(query.settings.attributes.mdbRemoveSpeakerFromTitle, true);
-assert.equal(query.settings.attributes.mdbUseArticleTitle, true);
-assert.equal(query.settings.attributes.mdbUseArticleImage, true);
+assert.equal(query.settings.attributes.query.mdbRemoveSpeakerFromTitle, true);
+assert.equal(query.settings.attributes.query.mdbUseArticleTitle, true);
+assert.equal(query.settings.attributes.query.mdbUseArticleImage, true);
 assert.equal(query.settings.innerBlocks[0][0], 'core/post-template');
 assert.equal(query.settings.innerBlocks[0][2][0][0], 'mdb/speech-video');
 assert.deepEqual(query.settings.allowedControls, ['search']);
@@ -130,9 +130,9 @@ assert.equal(attributeChanges[0].query.perPage, 12);
 assert.equal(attributeChanges[1].query.orderBy, 'title');
 assert.equal(attributeChanges[1].query.order, 'asc');
 assert.equal(attributeChanges[2].query.offset, 1);
-assert.equal(attributeChanges[3].mdbRemoveSpeakerFromTitle, false);
-assert.equal(attributeChanges[4].mdbUseArticleTitle, false);
-assert.equal(attributeChanges[5].mdbUseArticleImage, false);
+assert.equal(attributeChanges[3].query.mdbRemoveSpeakerFromTitle, false);
+assert.equal(attributeChanges[4].query.mdbUseArticleTitle, false);
+assert.equal(attributeChanges[5].query.mdbUseArticleImage, false);
 
 const videoVariations = variations.filter(({ block }) => block === 'mdb/speech-video');
 assert.equal(videoVariations.length, 3, 'all video variations are registered');

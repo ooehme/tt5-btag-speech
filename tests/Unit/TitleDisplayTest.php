@@ -82,7 +82,7 @@ final class TitleDisplayTest extends TestCase {
 		);
 	}
 
-	public function test_query_attributes_provide_display_context(): void {
+	public function test_nested_query_options_are_exposed_as_display_context(): void {
 		$display = new Query_Display();
 		$query   = $display->block_type_args( array(), 'core/query' );
 		$title   = $display->block_type_args( array(), 'core/post-title' );
@@ -102,8 +102,37 @@ final class TitleDisplayTest extends TestCase {
 		self::assertTrue(
 			in_array( Query_Display::REMOVE_SPEAKER_CONTEXT, $title['uses_context'], true )
 		);
-		self::assertTrue(
-			in_array( Query_Display::USE_ARTICLE_TITLE_CONTEXT, $title['uses_context'], true )
+
+		$parsed = $display->render_block_data(
+			array(
+				'blockName'   => 'core/query',
+				'attrs'       => array(
+					'namespace' => 'mdb/speeches',
+					'query'     => array(
+						Query_Display::REMOVE_SPEAKER_ATTRIBUTE    => true,
+						Query_Display::USE_ARTICLE_TITLE_ATTRIBUTE => true,
+						Query_Display::USE_ARTICLE_IMAGE_ATTRIBUTE => true,
+					),
+				),
+			)
 		);
+
+		self::assertTrue( $parsed['attrs'][ Query_Display::REMOVE_SPEAKER_ATTRIBUTE ] );
+		self::assertTrue( $parsed['attrs'][ Query_Display::USE_ARTICLE_TITLE_ATTRIBUTE ] );
+		self::assertTrue( $parsed['attrs'][ Query_Display::USE_ARTICLE_IMAGE_ATTRIBUTE ] );
+	}
+
+	public function test_legacy_top_level_query_options_remain_supported(): void {
+		$parsed = ( new Query_Display() )->render_block_data(
+			array(
+				'blockName' => 'core/query',
+				'attrs'     => array(
+					'namespace'                              => 'mdb/speeches',
+					Query_Display::REMOVE_SPEAKER_ATTRIBUTE => true,
+				),
+			)
+		);
+
+		self::assertTrue( $parsed['attrs'][ Query_Display::REMOVE_SPEAKER_ATTRIBUTE ] );
 	}
 }

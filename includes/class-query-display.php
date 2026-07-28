@@ -15,6 +15,7 @@ final class Query_Display {
 
 	public function register(): void {
 		add_filter( 'register_block_type_args', array( $this, 'block_type_args' ), 10, 2 );
+		add_filter( 'render_block_data', array( $this, 'render_block_data' ) );
 	}
 
 	/**
@@ -47,6 +48,35 @@ final class Query_Display {
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Kopiert gespeicherte Query-Optionen in registrierte Attribute, damit
+	 * WordPress sie als Block-Kontext an die Kindblöcke weitergibt.
+	 *
+	 * @param array<string,mixed> $parsed_block Parsed block data.
+	 * @return array<string,mixed>
+	 */
+	public function render_block_data( array $parsed_block ): array {
+		if (
+			'core/query' !== ( $parsed_block['blockName'] ?? '' )
+			|| 'mdb/speeches' !== ( $parsed_block['attrs']['namespace'] ?? '' )
+		) {
+			return $parsed_block;
+		}
+
+		$attributes = is_array( $parsed_block['attrs'] ?? null ) ? $parsed_block['attrs'] : array();
+		$query      = is_array( $attributes['query'] ?? null ) ? $attributes['query'] : array();
+
+		foreach ( $this->contexts() as $attribute ) {
+			$attributes[ $attribute ] = array_key_exists( $attribute, $query )
+				? (bool) $query[ $attribute ]
+				: ! empty( $attributes[ $attribute ] );
+		}
+
+		$parsed_block['attrs'] = $attributes;
+
+		return $parsed_block;
 	}
 
 	/**

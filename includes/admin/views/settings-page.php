@@ -120,18 +120,27 @@ defined( 'ABSPATH' ) || exit;
 		<thead><tr>
 			<th><?php esc_html_e( 'Rede', 'mdb-bundestag-speeches' ); ?></th>
 			<th><?php esc_html_e( 'Video-ID', 'mdb-bundestag-speeches' ); ?></th>
+			<th><?php esc_html_e( 'Artikeltitel', 'mdb-bundestag-speeches' ); ?></th>
+			<th><?php esc_html_e( 'Artikelbild-URL', 'mdb-bundestag-speeches' ); ?></th>
 			<th><?php esc_html_e( 'Status', 'mdb-bundestag-speeches' ); ?></th>
 			<th><?php esc_html_e( 'Zuletzt gesehen', 'mdb-bundestag-speeches' ); ?></th>
 			<th><?php esc_html_e( 'Fehler', 'mdb-bundestag-speeches' ); ?></th>
 		</tr></thead>
 		<tbody>
 		<?php if ( array() === $speeches ) : ?>
-			<tr><td colspan="5"><?php esc_html_e( 'Noch keine Reden synchronisiert.', 'mdb-bundestag-speeches' ); ?></td></tr>
+			<tr><td colspan="7"><?php esc_html_e( 'Noch keine Reden synchronisiert.', 'mdb-bundestag-speeches' ); ?></td></tr>
 		<?php else : ?>
 			<?php foreach ( $speeches as $speech ) : ?>
+				<?php $article_image_url = (string) get_post_meta( $speech->ID, '_mdb_article_image_url', true ); ?>
 				<tr>
 					<td><a href="<?php echo esc_url( get_edit_post_link( $speech->ID ) ); ?>"><?php echo esc_html( get_the_title( $speech ) ); ?></a></td>
 					<td><?php echo esc_html( (string) get_post_meta( $speech->ID, '_mdb_video_id', true ) ); ?></td>
+					<td><?php echo esc_html( (string) get_post_meta( $speech->ID, '_mdb_article_title', true ) ); ?></td>
+					<td style="overflow-wrap:anywhere">
+						<?php if ( '' !== $article_image_url ) : ?>
+							<a href="<?php echo esc_url( $article_image_url ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $article_image_url ); ?></a>
+						<?php endif; ?>
+					</td>
 					<td><code><?php echo esc_html( (string) get_post_meta( $speech->ID, '_mdb_sync_status', true ) ); ?></code></td>
 					<td><?php echo esc_html( (string) get_post_meta( $speech->ID, '_mdb_last_seen', true ) ); ?></td>
 					<td><?php echo esc_html( (string) get_post_meta( $speech->ID, '_mdb_last_error', true ) ); ?></td>

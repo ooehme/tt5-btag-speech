@@ -4,7 +4,7 @@ Tags: bundestag, speeches, video, gutenberg, query loop
 Requires at least: 6.7
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,10 @@ Der Embed und der Link zur Originalquelle bleiben verfügbar. Fehlgeschlagene Do
 Plugin-Einstellungen, Locks und Cronjobs werden entfernt. Synchronisierte Beiträge und Medien bleiben als redaktionelle Inhalte erhalten.
 
 == Changelog ==
+
+= 1.1.1 =
+* Behebt die Speicherung und Weitergabe der drei erweiterten Darstellungsoptionen.
+* Zeigt Artikeltitel und Artikelbild-URL in der Statustabelle.
 
 = 1.1.0 =
 

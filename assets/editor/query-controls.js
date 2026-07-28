@@ -86,9 +86,12 @@
 									'Entfernt nur in dieser Darstellung den Suffix „: Rede von …“.',
 									'mdb-bundestag-speeches'
 								),
-								checked: attributes.mdbRemoveSpeakerFromTitle ?? false,
+								checked:
+									query.mdbRemoveSpeakerFromTitle ??
+									attributes.mdbRemoveSpeakerFromTitle ??
+									false,
 								onChange: (mdbRemoveSpeakerFromTitle) =>
-									setAttributes({ mdbRemoveSpeakerFromTitle }),
+									updateQuery({ mdbRemoveSpeakerFromTitle }),
 							}),
 							el(ToggleControl, {
 								label: __('Artikeltitel verwenden', 'mdb-bundestag-speeches'),
@@ -96,8 +99,9 @@
 									'Verwendet den Titel des verlinkten Bundestag-Artikels; andernfalls bleibt der normale Titel erhalten.',
 									'mdb-bundestag-speeches'
 								),
-								checked: attributes.mdbUseArticleTitle ?? false,
-								onChange: (mdbUseArticleTitle) => setAttributes({ mdbUseArticleTitle }),
+								checked:
+									query.mdbUseArticleTitle ?? attributes.mdbUseArticleTitle ?? false,
+								onChange: (mdbUseArticleTitle) => updateQuery({ mdbUseArticleTitle }),
 							}),
 							el(ToggleControl, {
 								label: __('Artikelbild als Thumbnail', 'mdb-bundestag-speeches'),
@@ -105,8 +109,9 @@
 									'Verwendet das Artikelbild als Video-Vorschaubild, falls eines verfügbar ist.',
 									'mdb-bundestag-speeches'
 								),
-								checked: attributes.mdbUseArticleImage ?? false,
-								onChange: (mdbUseArticleImage) => setAttributes({ mdbUseArticleImage }),
+								checked:
+									query.mdbUseArticleImage ?? attributes.mdbUseArticleImage ?? false,
+								onChange: (mdbUseArticleImage) => updateQuery({ mdbUseArticleImage }),
 							})
 						)
 					)

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1 – 2026-07-28
+
+- Speicherung und Weitergabe der erweiterten Query-Darstellungsoptionen korrigiert
+- Artikeltitel und Artikelbild-URL in der Statustabelle ergänzt
+
 ## 1.1.0 – 2026-07-28
 
 - Query-Darstellung mit Anzahl, Sortierung, Offset und optional gekürzten Redentiteln
