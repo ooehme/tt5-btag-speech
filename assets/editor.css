@@ -1,0 +1,16 @@
+.mdb-speech-video-editor {
+	align-items: center;
+	aspect-ratio: 16/9;
+	border: 1px dashed currentColor;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	justify-content: center;
+	padding: 1rem;
+}
+
+.mdb-speech-video-editor .dashicons {
+	font-size: 2rem;
+	height: 2rem;
+	width: 2rem;
+}

@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: '8.0'
+          coverage: none
+          extensions: dom
+          tools: none
+
+      - name: Verify version and quality
+        shell: bash
+        run: |
+          plugin_version="$(sed -n 's/^ \* Version:[[:space:]]*//p' mdb-bundestag-speeches.php)"
+          test "v${plugin_version}" = "${GITHUB_REF_NAME}"
+          find . -type f -name '*.php' -not -path './.git/*' -print0 | xargs -0 -n1 php -l
+          php tests/run.php
+          find assets tests -type f \( -name '*.js' -o -name '*.cjs' \) -print0 | xargs -0 -n1 node --check
+          node tests/editor.test.cjs
+
+      - name: Build plugin ZIP
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          mkdir -p dist/mdb-bundestag-speeches
+          rsync -a --exclude='.git' --exclude='.github' --exclude='dist' --exclude='tests' ./ dist/mdb-bundestag-speeches/
+          cd dist
+          zip -qr "mdb-bundestag-speeches-${version}.zip" mdb-bundestag-speeches
+
+      - name: Publish GitHub release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          gh release create "${GITHUB_REF_NAME}" "dist/mdb-bundestag-speeches-${version}.zip" --generate-notes --verify-tag

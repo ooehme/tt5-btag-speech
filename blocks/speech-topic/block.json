@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "mdb/speech-topic",
+	"version": "1.0.0",
+	"title": "Tagesordnungspunkt",
+	"category": "mdb-speeches",
+	"icon": "editor-ol",
+	"textdomain": "mdb-bundestag-speeches",
+	"editorScript": "mdb-speeches-editor",
+	"style": "mdb-speeches-style",
+	"usesContext": [ "postId", "postType" ],
+	"supports": {
+		"html": false,
+		"typography": true,
+		"color": {
+			"text": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	}
+}

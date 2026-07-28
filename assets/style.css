@@ -1,0 +1,66 @@
+.mdb-speech-video {
+	max-width: 100%;
+}
+
+.mdb-speech-video__frame {
+	aspect-ratio: var(--mdb-speech-aspect-ratio, 16/9);
+	background: transparent;
+	overflow: hidden;
+	position: relative;
+	width: 100%;
+}
+
+.mdb-speech-video__frame > iframe,
+.mdb-speech-video__frame > video,
+.mdb-speech-video__load,
+.mdb-speech-video__poster {
+	border: 0;
+	height: 100%;
+	inset: 0;
+	position: absolute;
+	width: 100%;
+}
+
+.mdb-speech-video__frame > video,
+.mdb-speech-video__poster {
+	object-fit: cover;
+}
+
+.mdb-speech-video__load {
+	align-items: center;
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	padding: 0;
+}
+
+.mdb-speech-video__load::after {
+	background: currentColor;
+	clip-path: polygon(20% 0, 100% 50%, 20% 100%);
+	content: "";
+	height: 3rem;
+	opacity: 0.9;
+	position: relative;
+	width: 3rem;
+}
+
+.mdb-speech-video__load-label {
+	background: inherit;
+	border: 1px solid currentColor;
+	bottom: 1rem;
+	color: inherit;
+	padding: 0.4em 0.7em;
+	position: absolute;
+}
+
+.mdb-speech-video__credit {
+	font-size: 0.875em;
+	margin-block-start: 0.5em;
+}
+
+.mdb-speech-video__fallback {
+	border: 1px solid currentColor;
+	padding: 1em;
+}

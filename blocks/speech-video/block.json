@@ -1,0 +1,56 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "mdb/speech-video",
+	"version": "1.0.0",
+	"title": "Bundestag-Video",
+	"category": "mdb-speeches",
+	"icon": "video-alt3",
+	"description": "Gibt das lokale Video oder den Bundestag-Embed der aktuellen Rede aus.",
+	"textdomain": "mdb-bundestag-speeches",
+	"editorScript": "mdb-speeches-editor",
+	"editorStyle": "mdb-speeches-editor-style",
+	"style": "mdb-speeches-style",
+	"viewScript": "mdb-speeches-view",
+	"usesContext": [ "postId", "postType" ],
+	"attributes": {
+		"source": {
+			"type": "string",
+			"default": "auto",
+			"enum": [ "auto", "local", "embed" ]
+		},
+		"display": {
+			"type": "string",
+			"default": "click_to_load",
+			"enum": [ "direct", "click_to_load", "link" ]
+		},
+		"controls": {
+			"type": "boolean",
+			"default": true
+		},
+		"autoplay": {
+			"type": "boolean",
+			"default": false
+		},
+		"muted": {
+			"type": "boolean",
+			"default": false
+		},
+		"poster": {
+			"type": "string",
+			"default": ""
+		},
+		"aspectRatio": {
+			"type": "string",
+			"default": "16/9",
+			"enum": [ "16/9", "4/3", "1/1", "21/9" ]
+		}
+	},
+	"supports": {
+		"align": [ "wide", "full" ],
+		"html": false,
+		"spacing": {
+			"margin": true
+		}
+	}
+}
