@@ -45,7 +45,7 @@ Verfügbar sind:
 
 Der Videoblock liest im Core Query Loop den aktuellen `postId`-Kontext. Das `core/post-template` bleibt frei gestaltbar; Pagination übernehmen die Core-Blöcke.
 
-Die Query-Variation bietet Darstellungsoptionen für Anzahl, Sortierung, Offset, gekürzte Redentitel, Artikeltitel und Artikelbilder. Fehlende Artikelmetadaten ändern die normale Ausgabe nicht.
+Die Query-Variation bietet Anzahl, Sortierung und Offset. Die Optionen für gekürzte Redentitel und Artikeltitel befinden sich direkt am Titelblock; das Artikelbild wird direkt am Videoblock aktiviert. Fehlende Artikelmetadaten ändern die normale Ausgabe nicht.
 
 ## WP-CLI
 

@@ -22,11 +22,12 @@ final class Speech_Video_Renderer {
 				'autoplay'    => false,
 				'muted'       => false,
 				'poster'      => '',
+				'useArticleImage' => true,
 				'aspectRatio' => '16/9',
 			)
 		);
 		$post_id              = $this->post_id( $block );
-		$attributes['poster'] = $this->poster( $post_id, $attributes, $block );
+		$attributes['poster'] = $this->poster( $post_id, $attributes );
 		$source_url           = (string) get_post_meta( $post_id, '_mdb_source_url', true );
 		$source               = $this->source( $post_id, (string) $attributes['source'] );
 		$wrapper              = get_block_wrapper_attributes( array( 'class' => 'mdb-speech-video' ) );
@@ -83,12 +84,12 @@ final class Speech_Video_Renderer {
 	/**
 	 * @param array<string,mixed> $attributes Block attributes.
 	 */
-	private function poster( int $post_id, array $attributes, WP_Block $block ): string {
+	private function poster( int $post_id, array $attributes ): string {
 		$custom = trim( (string) ( $attributes['poster'] ?? '' ) );
 		if ( '' !== $custom ) {
 			return $custom;
 		}
-		if ( empty( $block->context[ Query_Display::USE_ARTICLE_IMAGE_CONTEXT ] ) ) {
+		if ( empty( $attributes['useArticleImage'] ) ) {
 			return '';
 		}
 

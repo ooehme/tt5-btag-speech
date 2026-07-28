@@ -39,9 +39,21 @@ final class Blocks {
 			true
 		);
 		wp_register_script(
+			'mdb-speeches-editor-title-controls',
+			MDB_SPEECHES_URL . 'assets/editor/title-controls.js',
+			array( 'wp-block-editor', 'wp-compose', 'wp-components', 'wp-element', 'wp-hooks', 'wp-i18n' ),
+			$asset['version'],
+			true
+		);
+		wp_register_script(
 			'mdb-speeches-editor',
 			MDB_SPEECHES_URL . 'assets/editor.js',
-			array( 'mdb-speeches-editor-blocks', 'mdb-speeches-editor-query', 'mdb-speeches-editor-query-controls' ),
+			array(
+				'mdb-speeches-editor-blocks',
+				'mdb-speeches-editor-query',
+				'mdb-speeches-editor-query-controls',
+				'mdb-speeches-editor-title-controls',
+			),
 			$asset['version'],
 			true
 		);
@@ -49,6 +61,7 @@ final class Blocks {
 			'mdb-speeches-editor-blocks',
 			'mdb-speeches-editor-query',
 			'mdb-speeches-editor-query-controls',
+			'mdb-speeches-editor-title-controls',
 		);
 		foreach ( $translated_scripts as $handle ) {
 			wp_set_script_translations( $handle, 'mdb-bundestag-speeches', MDB_SPEECHES_DIR . 'languages' );

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.2 – 2026-07-28
+
+- Titeloptionen direkt am Titelblock und Thumbnail-Option direkt am Videoblock
+- automatische Laufzeitmigration bestehender Query-Einstellungen auf die Kindblöcke
+
 ## 1.1.1 – 2026-07-28
 
 - Speicherung und Weitergabe der erweiterten Query-Darstellungsoptionen korrigiert

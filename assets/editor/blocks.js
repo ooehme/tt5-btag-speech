@@ -8,6 +8,7 @@
 	const { __ } = wp.i18n;
 
 	const videoAttributes = {
+		useArticleImage: { type: 'boolean' },
 		source: { type: 'string', default: 'auto' },
 		display: { type: 'string', default: 'click_to_load' },
 		controls: { type: 'boolean', default: true },
@@ -69,6 +70,15 @@
 						checked: attributes.muted,
 						onChange: (muted) => setAttributes({ muted }),
 					}),
+					el(ToggleControl, {
+						label: __('Artikelbild als Thumbnail', 'mdb-bundestag-speeches'),
+						help: __(
+							'Verwendet das importierte Artikelbild, falls eines verfügbar ist.',
+							'mdb-bundestag-speeches'
+						),
+						checked: attributes.useArticleImage ?? true,
+						onChange: (useArticleImage) => setAttributes({ useArticleImage }),
+					}),
 					el(TextControl, {
 						label: __('Poster-URL', 'mdb-bundestag-speeches'),
 						type: 'url',
@@ -103,7 +113,7 @@
 		icon: 'video-alt3',
 		category: 'mdb-speeches',
 		attributes: videoAttributes,
-		usesContext: ['postId', 'postType', 'mdb/useArticleImage'],
+		usesContext: ['postId', 'postType'],
 		edit: videoEdit,
 		save: () => null,
 	});

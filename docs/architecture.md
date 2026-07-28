@@ -23,7 +23,7 @@ Das Plugin trennt Quelle, Persistenz, Synchronisierung, Download und Ausgabe. Es
 - `CLI` stellt die drei WP-CLI-Kommandos bereit.
 - `Blocks` registriert Block-Metadaten und Assets.
 - `Speech_Video_Renderer` rendert Player und Click-to-load.
-- `Query_Display` reicht die Darstellungsoptionen als Blockkontext weiter.
+- `Query_Display` überträgt alte Query-Optionen beim Rendern auf noch nicht konfigurierte Kindblöcke.
 - `Title_Display` ersetzt ausschließlich bei der Ausgabe Titel oder Redner-Suffixe.
 - `Block_Renderer` rendert die drei dynamischen Felder.
 - Editor-Blocktypen und Query-Variation liegen getrennt unter `assets/editor/`.

@@ -53,9 +53,9 @@ final class RendererTest extends TestCase {
 	public function test_article_image_is_used_as_remote_or_local_poster(): void {
 		$this->setUp();
 		$renderer = new Speech_Video_Renderer( new URL_Resolver() );
-		$context  = new WP_Block( array( 'postId' => 17, 'mdb/useArticleImage' => true ) );
+		$context  = new WP_Block( array( 'postId' => 17 ) );
 		$html     = $renderer->render(
-			array( 'source' => 'embed', 'display' => 'click_to_load' ),
+			array( 'source' => 'embed', 'display' => 'click_to_load', 'useArticleImage' => true ),
 			'',
 			$context
 		);
@@ -64,11 +64,26 @@ final class RendererTest extends TestCase {
 		$GLOBALS['mdb_test_meta'][17]['_mdb_article_image_id'] = 91;
 		$GLOBALS['mdb_test_attachments'][91] = 'https://example.test/uploads/article-local.jpg';
 		$html = $renderer->render(
-			array( 'source' => 'embed', 'display' => 'click_to_load' ),
+			array( 'source' => 'embed', 'display' => 'click_to_load', 'useArticleImage' => true ),
 			'',
 			$context
 		);
 		self::assertStringContainsString( 'uploads/article-local.jpg', $html );
+		self::assertStringNotContainsString( 'resource/image/1184450/article.jpg', $html );
+	}
+
+	public function test_article_image_can_be_disabled_on_the_video_block(): void {
+		$this->setUp();
+		$html = ( new Speech_Video_Renderer( new URL_Resolver() ) )->render(
+			array(
+				'source'          => 'embed',
+				'display'         => 'click_to_load',
+				'useArticleImage' => false,
+			),
+			'',
+			new WP_Block( array( 'postId' => 17 ) )
+		);
+
 		self::assertStringNotContainsString( 'resource/image/1184450/article.jpg', $html );
 	}
 

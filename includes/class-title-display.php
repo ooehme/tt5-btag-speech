@@ -15,7 +15,12 @@ final class Title_Display {
 	 * @param array<string,mixed> $parsed_block Parsed block data.
 	 */
 	public function render( string $content, array $parsed_block, WP_Block $block ): string {
-		if ( ! empty( $block->context[ Query_Display::USE_ARTICLE_TITLE_CONTEXT ] ) ) {
+		$classes = preg_split(
+			'/\s+/',
+			trim( (string) ( $parsed_block['attrs']['className'] ?? '' ) )
+		) ?: array();
+
+		if ( in_array( Query_Display::USE_ARTICLE_TITLE_CLASS, $classes, true ) ) {
 			$post_id       = absint( $block->context['postId'] ?? 0 );
 			$article_title = (string) get_post_meta( $post_id, '_mdb_article_title', true );
 			if ( '' !== $article_title ) {
@@ -23,7 +28,7 @@ final class Title_Display {
 			}
 		}
 
-		return ! empty( $block->context[ Query_Display::REMOVE_SPEAKER_CONTEXT ] )
+		return in_array( Query_Display::REMOVE_SPEAKER_CLASS, $classes, true )
 			? self::remove_speaker_suffix( $content )
 			: $content;
 	}

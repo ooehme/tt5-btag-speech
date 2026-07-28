@@ -15,9 +15,6 @@
 				perPage: 6,
 				pages: 0,
 				offset: 0,
-				mdbRemoveSpeakerFromTitle: true,
-				mdbUseArticleTitle: true,
-				mdbUseArticleImage: true,
 				postType: 'mdb_speech',
 				order: 'desc',
 				orderBy: 'date',
@@ -33,8 +30,18 @@
 				'core/post-template',
 				{},
 				[
-					['mdb/speech-video', { source: 'auto', display: 'click_to_load' }],
-					['core/post-title', { isLink: true }],
+					[
+						'mdb/speech-video',
+						{ source: 'auto', display: 'click_to_load', useArticleImage: true },
+					],
+					[
+						'core/post-title',
+						{
+							isLink: true,
+							className:
+								'mdb-speech-title--remove-speaker mdb-speech-title--article-title',
+						},
+					],
 					['core/post-date'],
 					['mdb/speech-topic'],
 					['mdb/speech-source-link'],

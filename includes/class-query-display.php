@@ -5,54 +5,22 @@ declare(strict_types=1);
 namespace MDB\BundestagSpeeches;
 
 final class Query_Display {
-	public const REMOVE_SPEAKER_ATTRIBUTE   = 'mdbRemoveSpeakerFromTitle';
+	public const REMOVE_SPEAKER_ATTRIBUTE    = 'mdbRemoveSpeakerFromTitle';
 	public const USE_ARTICLE_TITLE_ATTRIBUTE = 'mdbUseArticleTitle';
 	public const USE_ARTICLE_IMAGE_ATTRIBUTE = 'mdbUseArticleImage';
 
-	public const REMOVE_SPEAKER_CONTEXT   = 'mdb/removeSpeakerFromTitle';
-	public const USE_ARTICLE_TITLE_CONTEXT = 'mdb/useArticleTitle';
-	public const USE_ARTICLE_IMAGE_CONTEXT = 'mdb/useArticleImage';
+	public const REMOVE_SPEAKER_CLASS    = 'mdb-speech-title--remove-speaker';
+	public const KEEP_SPEAKER_CLASS      = 'mdb-speech-title--keep-speaker';
+	public const USE_ARTICLE_TITLE_CLASS = 'mdb-speech-title--article-title';
+	public const USE_SOURCE_TITLE_CLASS  = 'mdb-speech-title--source-title';
 
 	public function register(): void {
-		add_filter( 'register_block_type_args', array( $this, 'block_type_args' ), 10, 2 );
 		add_filter( 'render_block_data', array( $this, 'render_block_data' ) );
 	}
 
 	/**
-	 * @param array<string,mixed> $args Block type arguments.
-	 * @return array<string,mixed>
-	 */
-	public function block_type_args( array $args, string $block_type ): array {
-		if ( 'core/query' === $block_type ) {
-			$args['attributes']       ??= array();
-			$args['provides_context'] ??= array();
-			foreach ( $this->contexts() as $context => $attribute ) {
-				$args['attributes'][ $attribute ] = array(
-					'type'    => 'boolean',
-					'default' => false,
-				);
-				$args['provides_context'][ $context ] = $attribute;
-			}
-		}
-
-		if ( 'core/post-title' === $block_type ) {
-			$args['uses_context'] ??= array();
-			$args['uses_context']   = array_values(
-				array_unique(
-					array_merge(
-						$args['uses_context'],
-						array( self::REMOVE_SPEAKER_CONTEXT, self::USE_ARTICLE_TITLE_CONTEXT )
-					)
-				)
-			);
-		}
-
-		return $args;
-	}
-
-	/**
-	 * Kopiert gespeicherte Query-Optionen in registrierte Attribute, damit
-	 * WordPress sie als Block-Kontext an die Kindblöcke weitergibt.
+	 * Übernimmt alte Query-Optionen für Kindblöcke, die noch keine eigenen
+	 * Einstellungen besitzen.
 	 *
 	 * @param array<string,mixed> $parsed_block Parsed block data.
 	 * @return array<string,mixed>
@@ -67,26 +35,88 @@ final class Query_Display {
 
 		$attributes = is_array( $parsed_block['attrs'] ?? null ) ? $parsed_block['attrs'] : array();
 		$query      = is_array( $attributes['query'] ?? null ) ? $attributes['query'] : array();
+		$options    = array();
 
-		foreach ( $this->contexts() as $attribute ) {
-			$attributes[ $attribute ] = array_key_exists( $attribute, $query )
+		foreach ( $this->option_attributes() as $attribute ) {
+			$options[ $attribute ] = array_key_exists( $attribute, $query )
 				? (bool) $query[ $attribute ]
-				: ! empty( $attributes[ $attribute ] );
+				: ( array_key_exists( $attribute, $attributes ) ? (bool) $attributes[ $attribute ] : true );
 		}
 
-		$parsed_block['attrs'] = $attributes;
+		$parsed_block['innerBlocks'] = $this->decorate_blocks(
+			is_array( $parsed_block['innerBlocks'] ?? null ) ? $parsed_block['innerBlocks'] : array(),
+			$options
+		);
 
 		return $parsed_block;
 	}
 
 	/**
-	 * @return array<string,string>
+	 * @param array<int,array<string,mixed>> $blocks Parsed child blocks.
+	 * @param array<string,bool>             $options Legacy display options.
+	 * @return array<int,array<string,mixed>>
 	 */
-	private function contexts(): array {
+	private function decorate_blocks( array $blocks, array $options ): array {
+		foreach ( $blocks as &$block ) {
+			if ( 'core/query' === ( $block['blockName'] ?? '' ) ) {
+				continue;
+			}
+
+			$block['attrs'] = is_array( $block['attrs'] ?? null ) ? $block['attrs'] : array();
+			if ( 'core/post-title' === ( $block['blockName'] ?? '' ) ) {
+				$block['attrs']['className'] = $this->legacy_title_classes(
+					(string) ( $block['attrs']['className'] ?? '' ),
+					$options
+				);
+			}
+			if (
+				'mdb/speech-video' === ( $block['blockName'] ?? '' )
+				&& ! array_key_exists( 'useArticleImage', $block['attrs'] )
+			) {
+				$block['attrs']['useArticleImage'] = $options[ self::USE_ARTICLE_IMAGE_ATTRIBUTE ];
+			}
+			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+				$block['innerBlocks'] = $this->decorate_blocks( $block['innerBlocks'], $options );
+			}
+		}
+		unset( $block );
+
+		return $blocks;
+	}
+
+	/**
+	 * @param array<string,bool> $options Legacy display options.
+	 */
+	private function legacy_title_classes( string $class_name, array $options ): string {
+		$classes = preg_split( '/\s+/', trim( $class_name ) ) ?: array();
+		if (
+			! in_array( self::REMOVE_SPEAKER_CLASS, $classes, true )
+			&& ! in_array( self::KEEP_SPEAKER_CLASS, $classes, true )
+		) {
+			$classes[] = $options[ self::REMOVE_SPEAKER_ATTRIBUTE ]
+				? self::REMOVE_SPEAKER_CLASS
+				: self::KEEP_SPEAKER_CLASS;
+		}
+		if (
+			! in_array( self::USE_ARTICLE_TITLE_CLASS, $classes, true )
+			&& ! in_array( self::USE_SOURCE_TITLE_CLASS, $classes, true )
+		) {
+			$classes[] = $options[ self::USE_ARTICLE_TITLE_ATTRIBUTE ]
+				? self::USE_ARTICLE_TITLE_CLASS
+				: self::USE_SOURCE_TITLE_CLASS;
+		}
+
+		return trim( implode( ' ', array_unique( array_filter( $classes ) ) ) );
+	}
+
+	/**
+	 * @return list<string>
+	 */
+	private function option_attributes(): array {
 		return array(
-			self::REMOVE_SPEAKER_CONTEXT    => self::REMOVE_SPEAKER_ATTRIBUTE,
-			self::USE_ARTICLE_TITLE_CONTEXT => self::USE_ARTICLE_TITLE_ATTRIBUTE,
-			self::USE_ARTICLE_IMAGE_CONTEXT => self::USE_ARTICLE_IMAGE_ATTRIBUTE,
+			self::REMOVE_SPEAKER_ATTRIBUTE,
+			self::USE_ARTICLE_TITLE_ATTRIBUTE,
+			self::USE_ARTICLE_IMAGE_ATTRIBUTE,
 		);
 	}
 }

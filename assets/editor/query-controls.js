@@ -3,7 +3,7 @@
 
 	const { InspectorControls } = wp.blockEditor;
 	const { createHigherOrderComponent } = wp.compose;
-	const { PanelBody, RangeControl, SelectControl, ToggleControl } = wp.components;
+	const { PanelBody, RangeControl, SelectControl } = wp.components;
 	const { createElement: el, Fragment } = wp.element;
 	const { addFilter } = wp.hooks;
 	const { __ } = wp.i18n;
@@ -79,39 +79,6 @@
 								min: 0,
 								max: 100,
 								onChange: (offset) => updateQuery({ offset }),
-							}),
-							el(ToggleControl, {
-								label: __('Redner aus Titel entfernen', 'mdb-bundestag-speeches'),
-								help: __(
-									'Entfernt nur in dieser Darstellung den Suffix „: Rede von …“.',
-									'mdb-bundestag-speeches'
-								),
-								checked:
-									query.mdbRemoveSpeakerFromTitle ??
-									attributes.mdbRemoveSpeakerFromTitle ??
-									false,
-								onChange: (mdbRemoveSpeakerFromTitle) =>
-									updateQuery({ mdbRemoveSpeakerFromTitle }),
-							}),
-							el(ToggleControl, {
-								label: __('Artikeltitel verwenden', 'mdb-bundestag-speeches'),
-								help: __(
-									'Verwendet den Titel des verlinkten Bundestag-Artikels; andernfalls bleibt der normale Titel erhalten.',
-									'mdb-bundestag-speeches'
-								),
-								checked:
-									query.mdbUseArticleTitle ?? attributes.mdbUseArticleTitle ?? false,
-								onChange: (mdbUseArticleTitle) => updateQuery({ mdbUseArticleTitle }),
-							}),
-							el(ToggleControl, {
-								label: __('Artikelbild als Thumbnail', 'mdb-bundestag-speeches'),
-								help: __(
-									'Verwendet das Artikelbild als Video-Vorschaubild, falls eines verfügbar ist.',
-									'mdb-bundestag-speeches'
-								),
-								checked:
-									query.mdbUseArticleImage ?? attributes.mdbUseArticleImage ?? false,
-								onChange: (mdbUseArticleImage) => updateQuery({ mdbUseArticleImage }),
 							})
 						)
 					)

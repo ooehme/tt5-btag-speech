@@ -35,16 +35,16 @@ final class TitleDisplayTest extends TestCase {
 			$markup,
 			$display->render(
 				$markup,
-				array(),
-				new WP_Block( array( Query_Display::REMOVE_SPEAKER_CONTEXT => false ) )
+				array( 'attrs' => array( 'className' => Query_Display::KEEP_SPEAKER_CLASS ) ),
+				new WP_Block()
 			)
 		);
 		self::assertSame(
 			'<h2>TOP 24</h2>',
 			$display->render(
 				$markup,
-				array(),
-				new WP_Block( array( Query_Display::REMOVE_SPEAKER_CONTEXT => true ) )
+				array( 'attrs' => array( 'className' => Query_Display::REMOVE_SPEAKER_CLASS ) ),
+				new WP_Block()
 			)
 		);
 	}
@@ -58,52 +58,55 @@ final class TitleDisplayTest extends TestCase {
 			'<h2><a href="/rede">Regierungsentwurf zur Cybersicherheit beraten</a></h2>',
 			$display->render(
 				$markup,
-				array(),
-				new WP_Block(
-					array(
-						'postId'                                  => 17,
-						Query_Display::USE_ARTICLE_TITLE_CONTEXT => true,
-					)
-				)
+				array( 'attrs' => array( 'className' => Query_Display::USE_ARTICLE_TITLE_CLASS ) ),
+				new WP_Block( array( 'postId' => 17 ) )
 			)
 		);
 		self::assertSame(
 			$markup,
 			$display->render(
 				$markup,
-				array(),
-				new WP_Block(
-					array(
-						'postId'                                  => 18,
-						Query_Display::USE_ARTICLE_TITLE_CONTEXT => true,
-					)
-				)
+				array( 'attrs' => array( 'className' => Query_Display::USE_ARTICLE_TITLE_CLASS ) ),
+				new WP_Block( array( 'postId' => 18 ) )
 			)
 		);
 	}
 
-	public function test_nested_query_options_are_exposed_as_display_context(): void {
+	public function test_unconfigured_existing_query_defaults_are_applied_to_child_blocks(): void {
 		$display = new Query_Display();
-		$query   = $display->block_type_args( array(), 'core/query' );
-		$title   = $display->block_type_args( array(), 'core/post-title' );
-
-		self::assertSame(
-			false,
-			$query['attributes'][ Query_Display::REMOVE_SPEAKER_ATTRIBUTE ]['default']
-		);
-		self::assertSame(
-			Query_Display::USE_ARTICLE_TITLE_ATTRIBUTE,
-			$query['provides_context'][ Query_Display::USE_ARTICLE_TITLE_CONTEXT ]
-		);
-		self::assertSame(
-			Query_Display::USE_ARTICLE_IMAGE_ATTRIBUTE,
-			$query['provides_context'][ Query_Display::USE_ARTICLE_IMAGE_CONTEXT ]
-		);
-		self::assertTrue(
-			in_array( Query_Display::REMOVE_SPEAKER_CONTEXT, $title['uses_context'], true )
-		);
-
 		$parsed = $display->render_block_data(
+			array(
+				'blockName'   => 'core/query',
+				'attrs'       => array(
+					'namespace' => 'mdb/speeches',
+				),
+				'innerBlocks' => array(
+					array(
+						'blockName'   => 'core/post-template',
+						'attrs'       => array(),
+						'innerBlocks' => array(
+							array( 'blockName' => 'core/post-title', 'attrs' => array() ),
+							array( 'blockName' => 'mdb/speech-video', 'attrs' => array() ),
+						),
+					),
+				),
+			)
+		);
+		$children = $parsed['innerBlocks'][0]['innerBlocks'];
+
+		self::assertStringContainsString(
+			Query_Display::REMOVE_SPEAKER_CLASS,
+			$children[0]['attrs']['className']
+		);
+		self::assertStringContainsString(
+			Query_Display::USE_ARTICLE_TITLE_CLASS,
+			$children[0]['attrs']['className']
+		);
+		self::assertTrue( $children[1]['attrs']['useArticleImage'] );
+	}
+
+	public function test_direct_child_settings_override_legacy_query_options(): void {
+		$parsed = ( new Query_Display() )->render_block_data(
 			array(
 				'blockName'   => 'core/query',
 				'attrs'       => array(
@@ -114,25 +117,25 @@ final class TitleDisplayTest extends TestCase {
 						Query_Display::USE_ARTICLE_IMAGE_ATTRIBUTE => true,
 					),
 				),
-			)
-		);
-
-		self::assertTrue( $parsed['attrs'][ Query_Display::REMOVE_SPEAKER_ATTRIBUTE ] );
-		self::assertTrue( $parsed['attrs'][ Query_Display::USE_ARTICLE_TITLE_ATTRIBUTE ] );
-		self::assertTrue( $parsed['attrs'][ Query_Display::USE_ARTICLE_IMAGE_ATTRIBUTE ] );
-	}
-
-	public function test_legacy_top_level_query_options_remain_supported(): void {
-		$parsed = ( new Query_Display() )->render_block_data(
-			array(
-				'blockName' => 'core/query',
-				'attrs'     => array(
-					'namespace'                              => 'mdb/speeches',
-					Query_Display::REMOVE_SPEAKER_ATTRIBUTE => true,
+				'innerBlocks' => array(
+					array(
+						'blockName' => 'core/post-title',
+						'attrs'     => array(
+							'className' => Query_Display::KEEP_SPEAKER_CLASS . ' ' . Query_Display::USE_SOURCE_TITLE_CLASS,
+						),
+					),
+					array(
+						'blockName' => 'mdb/speech-video',
+						'attrs'     => array( 'useArticleImage' => false ),
+					),
 				),
 			)
 		);
 
-		self::assertTrue( $parsed['attrs'][ Query_Display::REMOVE_SPEAKER_ATTRIBUTE ] );
+		self::assertSame(
+			Query_Display::KEEP_SPEAKER_CLASS . ' ' . Query_Display::USE_SOURCE_TITLE_CLASS,
+			$parsed['innerBlocks'][0]['attrs']['className']
+		);
+		self::assertFalse( $parsed['innerBlocks'][1]['attrs']['useArticleImage'] );
 	}
 }
