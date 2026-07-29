@@ -4,7 +4,8 @@ Produktionsfähiges WordPress-Plugin zum Synchronisieren und Darstellen von Rede
 
 ## Funktionen
 
-- konfigurierbare Bundestag-Redner-ID und interne Filter-IDs
+- Rednerauswahl mit automatisch gepflegten Bundestag-Filter-IDs und manueller ID-Eingabe
+- lokal mitgelieferte Kopie der offiziellen Rednerliste als Ausfallsicherung
 - idempotenter Import als öffentlicher Custom Post Type `mdb_speech`
 - Artikeltitel als echter Beitragstitel mit bereinigtem Videotitel als Fallback
 - automatischer oder manuell gestarteter lokaler Download

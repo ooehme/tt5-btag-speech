@@ -58,6 +58,7 @@ final class Wipe_Service {
 		delete_option( 'mdb_speeches_sync_lock' );
 		delete_option( Legacy_Article_Image_Cleanup::OPTION );
 		delete_site_transient( 'mdb_speeches_github_release' );
+		delete_site_transient( 'mdb_speeches_speaker_catalog' );
 
 		return $summary;
 	}

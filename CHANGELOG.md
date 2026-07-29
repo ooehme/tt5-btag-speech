@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.7 – 2026-07-29
+
+- Redner und vollständige Wahlperioden-Filter werden aus der offiziellen Bundestag-Liste geladen und zwischengespeichert
+- die Rednerauswahl setzt den Redenlisten-Filter automatisch; unbekannte IDs verwenden sich selbst als Filter
+
 ## 2.0.6 – 2026-07-29
 
 - automatische MP4-Fallbacks zwischen den hochwertigen 1080p-Varianten mit 8 und 5 Mbit/s

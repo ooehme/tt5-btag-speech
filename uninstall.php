@@ -34,6 +34,7 @@ $cleanup = static function (): void {
 	delete_option( 'mdb_speeches_wipe_paused' );
 	delete_option( 'mdb_speeches_legacy_article_images_cleaned' );
 	delete_site_transient( 'mdb_speeches_github_release' );
+	delete_site_transient( 'mdb_speeches_speaker_catalog' );
 };
 
 if ( is_multisite() ) {

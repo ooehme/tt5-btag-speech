@@ -4,7 +4,7 @@ Tags: bundestag, speeches, video, gutenberg, query loop
 Requires at least: 6.7
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.0.6
+Stable tag: 2.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,7 @@ MDB Bundestagsreden importiert die Reden eines konfigurierbaren Bundestagsabgeor
 Funktionen:
 
 * konfigurierbare Redner-ID und Synchronisationsintervalle
+* offizielle Bundestag-Rednerliste mit lokaler Ausfallsicherung
 * Artikeltitel als Beitragstitel mit bereinigtem Videotitel als Fallback
 * automatischer oder manuell gestarteter lokaler Download
 * sicherer, gestreamter MP4-Import
@@ -55,6 +56,10 @@ Der Link zur Originalquelle bleibt verfügbar. Fehlgeschlagene Downloads können
 Plugin-Einstellungen, Locks und Cronjobs werden entfernt. Synchronisierte Beiträge und Medien bleiben als redaktionelle Inhalte erhalten.
 
 == Changelog ==
+
+= 2.0.7 =
+* Lädt Redner und vollständige Wahlperioden-Filter aus der offiziellen Bundestag-Liste.
+* Setzt den Redenlisten-Filter automatisch; unbekannte Redner fallen auf ihre Redner-ID zurück.
 
 = 2.0.6 =
 * Ergänzt automatische MP4-Fallbacks zwischen den hochwertigen 1080p-Varianten.

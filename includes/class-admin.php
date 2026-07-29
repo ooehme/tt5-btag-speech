@@ -60,6 +60,7 @@ final class Admin {
 		$wipe_paused = (bool) get_option( Wipe_Service::PAUSE_OPTION, false );
 		$notice      = get_transient( $this->notice_key() );
 		$speakers    = $this->speaker_catalog->all();
+		$speaker_catalog_uses_fallback = $this->speaker_catalog->uses_local_fallback();
 		delete_transient( $this->notice_key() );
 
 		require MDB_SPEECHES_DIR . 'includes/admin/views/settings-page.php';

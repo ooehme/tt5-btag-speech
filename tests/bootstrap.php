@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/phpunit-shim.php';
 
 define( 'ABSPATH', dirname( __DIR__ ) . DIRECTORY_SEPARATOR );
-define( 'MDB_SPEECHES_VERSION', '2.0.6' );
+define( 'MDB_SPEECHES_VERSION', '2.0.7' );
 define( 'MDB_SPEECHES_DIR', dirname( __DIR__ ) . DIRECTORY_SEPARATOR );
 define( 'MDB_SPEECHES_URL', 'https://example.test/wp-content/plugins/mdb-bundestag-speeches/' );
 define( 'MDB_SPEECHES_FILE', MDB_SPEECHES_DIR . 'mdb-bundestag-speeches.php' );

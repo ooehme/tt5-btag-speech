@@ -4,9 +4,10 @@
  *
  * @var array<string,mixed> $settings
  * @var array<int,\WP_Post> $speeches
- * @var array<int,array{name:string,rednerId:string}> $speakers
+ * @var array<int,array{name:string,rednerId:string,filterIds:string}> $speakers
  * @var array<string,mixed> $last_sync
  * @var bool                $wipe_paused
+ * @var bool                $speaker_catalog_uses_fallback
  * @var mixed               $notice
  */
 
@@ -18,6 +19,12 @@ defined( 'ABSPATH' ) || exit;
 	<?php if ( is_array( $notice ) && ! empty( $notice['message'] ) ) : ?>
 		<div class="notice <?php echo esc_attr( 'success' === $notice['type'] ? 'notice-success' : 'notice-error' ); ?> is-dismissible">
 			<p><?php echo esc_html( (string) $notice['message'] ); ?></p>
+		</div>
+	<?php endif; ?>
+
+	<?php if ( $speaker_catalog_uses_fallback ) : ?>
+		<div class="notice notice-warning">
+			<p><?php esc_html_e( 'Die offizielle Bundestag-Rednerliste ist derzeit nicht erreichbar. Es wird die mitgelieferte lokale Kopie verwendet; die Auswahl kann daher veraltet sein.', 'mdb-bundestag-speeches' ); ?></p>
 		</div>
 	<?php endif; ?>
 
@@ -59,7 +66,7 @@ defined( 'ABSPATH' ) || exit;
 					<input id="mdb-speaker-id" name="mdb_speeches_settings[speaker_id]" type="text" inputmode="numeric" pattern="[0-9]+" list="mdb-speaker-options" autocomplete="off" value="<?php echo esc_attr( (string) $settings['speaker_id'] ); ?>" class="regular-text" required>
 					<datalist id="mdb-speaker-options">
 						<?php foreach ( $speakers as $speaker ) : ?>
-							<option value="<?php echo esc_attr( $speaker['rednerId'] ); ?>" label="<?php echo esc_attr( $speaker['name'] ); ?>"><?php echo esc_html( $speaker['name'] ); ?></option>
+							<option value="<?php echo esc_attr( $speaker['rednerId'] ); ?>" label="<?php echo esc_attr( $speaker['name'] ); ?>" data-filter-ids="<?php echo esc_attr( $speaker['filterIds'] ); ?>"><?php echo esc_html( $speaker['name'] ); ?></option>
 						<?php endforeach; ?>
 					</datalist>
 					<p class="description"><?php esc_html_e( 'Redner auswählen oder eine numerische Redner-ID manuell eingeben.', 'mdb-bundestag-speeches' ); ?></p>
@@ -69,7 +76,7 @@ defined( 'ABSPATH' ) || exit;
 				<th scope="row"><label for="mdb-speaker-filter"><?php esc_html_e( 'Redenlisten-Filter-IDs', 'mdb-bundestag-speeches' ); ?></label></th>
 				<td>
 					<input id="mdb-speaker-filter" name="mdb_speeches_settings[speaker_filter]" type="text" pattern="[0-9]+( OR [0-9]+)*" value="<?php echo esc_attr( (string) $settings['speaker_filter'] ); ?>" class="regular-text" required>
-					<p class="description"><?php esc_html_e( 'Zusätzliche Bundestag-interne IDs mit OR trennen, z. B. 21244 OR 12404.', 'mdb-bundestag-speeches' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Wird bei der Rednerauswahl automatisch gesetzt und kann anschließend manuell angepasst werden.', 'mdb-bundestag-speeches' ); ?></p>
 				</td>
 			</tr>
 			<tr>

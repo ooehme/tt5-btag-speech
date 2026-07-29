@@ -6,6 +6,7 @@ Das Plugin trennt Quelle, Persistenz, Synchronisierung, Download und Ausgabe. Es
 
 - `Plugin` verdrahtet die Komponenten und enthält Aktivierung/Deaktivierung.
 - `Settings` validiert Redner-ID, Intervall, Modus, Qualität und Größenlimit.
+- `Speaker_Catalog` lädt die offizielle Bundestag-Rednerliste, cached sie zwölf Stunden und fällt bei Störungen auf die mitgelieferte Kopie zurück.
 - `URL_Resolver` erzeugt URLs nur aus validierten IDs und verwaltet die Host-Allowlist.
 - `Source_Client` kapselt begrenzte WordPress-HTTP-Anfragen.
 - `List_Parser`, `Video_Parser` und `Article_Parser` lesen DOM-basiert mit mehreren kurzen Selektor-Fallbacks.

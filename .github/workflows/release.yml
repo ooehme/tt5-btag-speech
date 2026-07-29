@@ -32,6 +32,7 @@ jobs:
           find . -type f -name '*.php' -not -path './.git/*' -print0 | xargs -0 -n1 php -l
           php tests/run.php
           find assets tests -type f \( -name '*.js' -o -name '*.cjs' \) -print0 | xargs -0 -n1 node --check
+          node tests/admin.test.cjs
           node tests/editor.test.cjs
 
       - name: Build plugin ZIP
