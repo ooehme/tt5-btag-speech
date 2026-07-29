@@ -2,7 +2,7 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "mdb/speech-video",
-	"version": "2.0.4",
+	"version": "2.0.5",
 	"title": "Bundestag-Video",
 	"category": "mdb-speeches",
 	"icon": "video-alt3",

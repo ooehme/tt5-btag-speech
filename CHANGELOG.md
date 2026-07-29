@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.5 – 2026-07-29
+
+- Videorahmen behalten ihre Höhe auch bei verzögerten Block-Styles und Video-Lazy-Loading
+
 ## 2.0.4 – 2026-07-29
 
 - Artikelbilder bleiben extern und dienen als Video-Poster; redaktionelle Beitragsbilder haben Vorrang

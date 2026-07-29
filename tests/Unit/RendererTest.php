@@ -36,6 +36,10 @@ final class RendererTest extends TestCase {
 
 		self::assertStringContainsString( 'data-mdb-src="https://example.test/uploads/rede.mp4"', $html );
 		self::assertStringContainsString( 'uploads/article.jpg', $html );
+		self::assertStringContainsString(
+			'style="aspect-ratio:16/9;--mdb-speech-aspect-ratio:16/9;overflow:hidden;position:relative;width:100%"',
+			$html
+		);
 		self::assertStringNotContainsString( '<iframe', $html );
 		self::assertStringNotContainsString( 'data-mdb-kind', $html );
 	}
@@ -50,7 +54,10 @@ final class RendererTest extends TestCase {
 
 		self::assertStringContainsString( '<video', $html );
 		self::assertStringContainsString( 'poster="https://example.test/uploads/article.jpg"', $html );
-		self::assertStringContainsString( '--mdb-speech-aspect-ratio:16/9', $html );
+		self::assertStringContainsString(
+			'style="aspect-ratio:16/9;--mdb-speech-aspect-ratio:16/9;overflow:hidden;position:relative;width:100%"',
+			$html
+		);
 	}
 
 	public function test_direct_player_falls_back_to_remote_article_image(): void {

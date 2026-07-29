@@ -70,8 +70,8 @@ final class Speech_Video_Renderer {
 	 */
 	private function direct( string $source, string $poster, array $attributes, string $ratio ): string {
 		return sprintf(
-			'<div class="mdb-speech-video__frame" style="--mdb-speech-aspect-ratio:%1$s">%2$s</div>',
-			esc_attr( $ratio ),
+			'<div class="mdb-speech-video__frame" style="%1$s">%2$s</div>',
+			esc_attr( $this->frame_style( $ratio ) ),
 			$this->video( $source, $poster, $attributes )
 		);
 	}
@@ -86,11 +86,11 @@ final class Speech_Video_Renderer {
 			: '';
 
 		return sprintf(
-			'<div class="mdb-speech-video__frame" style="--mdb-speech-aspect-ratio:%1$s">'
+			'<div class="mdb-speech-video__frame" style="%1$s">'
 			. '<button type="button" class="mdb-speech-video__load" data-mdb-src="%2$s" data-mdb-controls="%3$s" data-mdb-autoplay="%4$s" data-mdb-muted="%5$s" data-mdb-poster="%6$s">'
 			. '%7$s<span class="mdb-speech-video__load-label">%8$s</span></button>'
 			. '<noscript><a href="%9$s">%10$s</a></noscript></div>',
-			esc_attr( $ratio ),
+			esc_attr( $this->frame_style( $ratio ) ),
 			esc_url( $source ),
 			! empty( $attributes['controls'] ) ? '1' : '0',
 			! empty( $attributes['autoplay'] ) ? '1' : '0',
@@ -120,6 +120,13 @@ final class Speech_Video_Renderer {
 
 	private function aspect_ratio( string $ratio ): string {
 		return in_array( $ratio, array( '16/9', '4/3', '1/1', '21/9' ), true ) ? $ratio : '16/9';
+	}
+
+	private function frame_style( string $ratio ): string {
+		// Keep the frame measurable before block styles and lazy-video scripts finish loading.
+		return 'aspect-ratio:' . $ratio
+			. ';--mdb-speech-aspect-ratio:' . $ratio
+			. ';overflow:hidden;position:relative;width:100%';
 	}
 
 	private function post_id( WP_Block $block ): int {
