@@ -35,7 +35,8 @@ final class RendererTest extends TestCase {
 		);
 		self::assertStringContainsString( 'data-mdb-src=', $html );
 		self::assertStringNotContainsString( '<iframe', $html );
-		self::assertStringContainsString( 'Deutscher Bundestag', $html );
+		self::assertStringContainsString( 'Video vom Deutschen Bundestag laden', $html );
+		self::assertStringNotContainsString( 'mdb-speech-video__credit', $html );
 	}
 
 	public function test_direct_embed_has_sandbox(): void {

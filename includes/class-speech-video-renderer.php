@@ -28,7 +28,6 @@ final class Speech_Video_Renderer {
 		);
 		$post_id              = $this->post_id( $block );
 		$attributes['poster'] = $this->poster( $post_id, $attributes );
-		$source_url           = (string) get_post_meta( $post_id, '_mdb_source_url', true );
 		$source               = $this->source( $post_id, (string) $attributes['source'] );
 		$wrapper              = get_block_wrapper_attributes( array( 'class' => 'mdb-speech-video' ) );
 
@@ -43,10 +42,9 @@ final class Speech_Video_Renderer {
 
 		if ( '' === $source['url'] ) {
 			return sprintf(
-				'<div %1$s><p class="mdb-speech-video__fallback">%2$s</p>%3$s</div>',
+				'<div %1$s><p class="mdb-speech-video__fallback">%2$s</p></div>',
 				$wrapper,
-				esc_html__( 'Für diese Rede ist derzeit kein Video verfügbar.', 'mdb-bundestag-speeches' ),
-				$this->credit( $source_url )
+				esc_html__( 'Für diese Rede ist derzeit kein Video verfügbar.', 'mdb-bundestag-speeches' )
 			);
 		}
 
@@ -55,7 +53,7 @@ final class Speech_Video_Renderer {
 			? $this->click_to_load( $source, $attributes, $ratio, $post_id )
 			: $this->direct( $source, $attributes, $ratio, $post_id );
 
-		return sprintf( '<div %1$s>%2$s%3$s</div>', $wrapper, $frame, $this->credit( $source_url ) );
+		return sprintf( '<div %1$s>%2$s</div>', $wrapper, $frame );
 	}
 
 	/**
@@ -178,18 +176,6 @@ final class Speech_Video_Renderer {
 			'<iframe src="%1$s" title="%2$s" loading="lazy" allowfullscreen="true" referrerpolicy="origin" allow="geolocation; autoplay; fullscreen" sandbox="allow-same-origin allow-scripts allow-forms allow-modals allow-popups"></iframe>',
 			esc_url( $url ),
 			esc_attr( sprintf( __( 'Bundestagsrede: %s', 'mdb-bundestag-speeches' ), get_the_title( $post_id ) ) )
-		);
-	}
-
-	private function credit( string $source_url ): string {
-		if ( '' === $source_url ) {
-			return '<p class="mdb-speech-video__credit">' . esc_html__( 'Quelle: Deutscher Bundestag', 'mdb-bundestag-speeches' ) . '</p>';
-		}
-		return sprintf(
-			'<p class="mdb-speech-video__credit">%1$s <a href="%2$s" rel="external">%3$s</a></p>',
-			esc_html__( 'Quelle:', 'mdb-bundestag-speeches' ),
-			esc_url( $source_url ),
-			esc_html__( 'Deutscher Bundestag', 'mdb-bundestag-speeches' )
 		);
 	}
 

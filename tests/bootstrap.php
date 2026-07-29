@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/phpunit-shim.php';
 
 define( 'ABSPATH', dirname( __DIR__ ) . DIRECTORY_SEPARATOR );
-define( 'MDB_SPEECHES_VERSION', '1.1.2' );
+define( 'MDB_SPEECHES_VERSION', '1.1.3' );
 define( 'MDB_SPEECHES_DIR', dirname( __DIR__ ) . DIRECTORY_SEPARATOR );
 define( 'MDB_SPEECHES_URL', 'https://example.test/wp-content/plugins/mdb-bundestag-speeches/' );
 define( 'MDB_SPEECHES_FILE', MDB_SPEECHES_DIR . 'mdb-bundestag-speeches.php' );
@@ -47,6 +47,28 @@ if ( ! class_exists( 'WP_Block' ) ) {
 	}
 }
 
+if ( ! class_exists( 'WP_Query' ) ) {
+	class WP_Query {
+		/** @var array<int,int> */
+		public array $posts = array();
+
+		/** @param array<string,mixed> $args */
+		public function __construct( array $args = array() ) {
+			$meta_query = is_array( $args['meta_query'] ?? null ) ? $args['meta_query'] : array();
+			$video_id   = (string) ( $meta_query[0]['value'] ?? '' );
+			if ( '' === $video_id ) {
+				return;
+			}
+			foreach ( $GLOBALS['mdb_test_meta'] as $post_id => $meta ) {
+				if ( $video_id === (string) ( $meta['_mdb_video_id'] ?? '' ) ) {
+					$this->posts[] = (int) $post_id;
+					break;
+				}
+			}
+		}
+	}
+}
+
 $GLOBALS['mdb_test_meta']        = array();
 $GLOBALS['mdb_test_attachments'] = array();
 $GLOBALS['mdb_test_post_types']  = array();
@@ -80,6 +102,31 @@ function absint( mixed $value ): int {
 }
 function sanitize_key( string $value ): string {
 	return preg_replace( '/[^a-z0-9_\-]/', '', strtolower( $value ) ) ?? '';
+}
+function sanitize_text_field( mixed $value ): string {
+	return trim( strip_tags( (string) $value ) );
+}
+function wp_slash( mixed $value ): mixed {
+	return $value;
+}
+function wp_timezone(): \DateTimeZone {
+	return new \DateTimeZone( 'Europe/Berlin' );
+}
+function get_gmt_from_date( string $date ): string {
+	return ( new \DateTimeImmutable( $date, wp_timezone() ) )
+		->setTimezone( new \DateTimeZone( 'UTC' ) )
+		->format( 'Y-m-d H:i:s' );
+}
+function wp_insert_post( array $postarr, bool $wp_error = false ): int|WP_Error {
+	$GLOBALS['mdb_last_wp_insert'] = $postarr;
+	return (int) ( $GLOBALS['mdb_test_insert_id'] ?? 501 );
+}
+function wp_update_post( array $postarr, bool $wp_error = false ): int|WP_Error {
+	$GLOBALS['mdb_last_wp_update'] = $postarr;
+	return (int) ( $postarr['ID'] ?? 0 );
+}
+function current_time( string $type, bool $gmt = false ): string {
+	return '2026-07-29 10:00:00';
 }
 function add_settings_error( string $setting, string $code, string $message ): void {
 	$GLOBALS['mdb_settings_errors'][ $code ] = $message;

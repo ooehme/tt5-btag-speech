@@ -3,7 +3,7 @@
  * Plugin Name:       MDB Bundestagsreden
  * Plugin URI:        https://github.com/ooehme/tt5-btag-speech
  * Description:       Synchronisiert Reden aus der Mediathek des Deutschen Bundestages und stellt sie als Gutenberg-Blöcke bereit.
- * Version:           1.1.2
+ * Version:           1.1.3
  * Requires at least: 6.7
  * Requires PHP:      8.0
  * Author:            Oliver Oehme
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MDB_SPEECHES_VERSION', '1.1.2' );
+define( 'MDB_SPEECHES_VERSION', '1.1.3' );
 define( 'MDB_SPEECHES_FILE', __FILE__ );
 define( 'MDB_SPEECHES_DIR', plugin_dir_path( __FILE__ ) );
 define( 'MDB_SPEECHES_URL', plugin_dir_url( __FILE__ ) );

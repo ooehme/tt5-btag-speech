@@ -55,11 +55,6 @@
 	position: absolute;
 }
 
-.mdb-speech-video__credit {
-	font-size: 0.875em;
-	margin-block-start: 0.5em;
-}
-
 .mdb-speech-video__fallback {
 	border: 1px solid currentColor;
 	padding: 1em;

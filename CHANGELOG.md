@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.3 – 2026-07-29
+
+- tatsächliches Rededatum wird bei jeder Synchronisierung als Beitragsdatum übernommen
+- obsoleter Quellenhinweis unter dem Videoblock entfernt
+
 ## 1.1.2 – 2026-07-28
 
 - Titeloptionen direkt am Titelblock und Thumbnail-Option direkt am Videoblock

@@ -65,17 +65,17 @@ final class Speech_Repository {
 			return new WP_Error( 'mdb_invalid_video_id', __( 'Die Rede enthält keine gültige Video-ID.', 'mdb-bundestag-speeches' ) );
 		}
 
-		$post_id = $this->find_by_video_id( $video_id );
+		$post_id   = $this->find_by_video_id( $video_id );
+		$post_date = $this->post_date( (string) ( $speech['date'] ?? '' ) );
 		if ( 0 === $post_id ) {
 			$postarr = array(
 				'post_type'   => self::POST_TYPE,
 				'post_status' => 'publish',
 				'post_title'  => sanitize_text_field( $speech['title'] ?? sprintf( __( 'Bundestagsrede %s', 'mdb-bundestag-speeches' ), $video_id ) ),
 			);
-			$date    = $this->post_date( (string) ( $speech['date'] ?? '' ) );
-			if ( null !== $date ) {
-				$postarr['post_date']     = $date;
-				$postarr['post_date_gmt'] = get_gmt_from_date( $date );
+			if ( null !== $post_date ) {
+				$postarr['post_date']     = $post_date;
+				$postarr['post_date_gmt'] = get_gmt_from_date( $post_date );
 			}
 
 			$inserted = wp_insert_post( wp_slash( $postarr ), true );
@@ -84,6 +84,20 @@ final class Speech_Repository {
 			}
 			$post_id = (int) $inserted;
 			update_post_meta( $post_id, '_mdb_video_id', $video_id );
+		} elseif ( null !== $post_date ) {
+			$updated = wp_update_post(
+				wp_slash(
+					array(
+						'ID'            => $post_id,
+						'post_date'     => $post_date,
+						'post_date_gmt' => get_gmt_from_date( $post_date ),
+					)
+				),
+				true
+			);
+			if ( is_wp_error( $updated ) ) {
+				return $updated;
+			}
 		}
 
 		foreach ( self::META_MAP as $field => $meta_key ) {
@@ -196,7 +210,21 @@ final class Speech_Repository {
 	}
 
 	private function post_date( string $date ): ?string {
-		$parsed = DateTimeImmutable::createFromFormat( '!d.m.Y', $date, wp_timezone() );
+		if ( ! preg_match( '/\b(\d{1,2})\.(\d{1,2})\.(\d{4})\b/u', $date, $matches ) ) {
+			return null;
+		}
+		$day   = (int) $matches[1];
+		$month = (int) $matches[2];
+		$year  = (int) $matches[3];
+		if ( ! checkdate( $month, $day, $year ) ) {
+			return null;
+		}
+
+		$parsed = DateTimeImmutable::createFromFormat(
+			'!d.m.Y',
+			sprintf( '%02d.%02d.%04d', $day, $month, $year ),
+			wp_timezone()
+		);
 		if ( false === $parsed ) {
 			return null;
 		}

@@ -4,7 +4,7 @@ Tags: bundestag, speeches, video, gutenberg, query loop
 Requires at least: 6.7
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,10 @@ Der Embed und der Link zur Originalquelle bleiben verfügbar. Fehlgeschlagene Do
 Plugin-Einstellungen, Locks und Cronjobs werden entfernt. Synchronisierte Beiträge und Medien bleiben als redaktionelle Inhalte erhalten.
 
 == Changelog ==
+
+= 1.1.3 =
+* Verwendet auch bei bestehenden Beiträgen das tatsächliche Rededatum als Beitragsdatum.
+* Entfernt den obsoleten Quellenhinweis unter dem Videoblock.
 
 = 1.1.2 =
 * Verschiebt Titeloptionen direkt an den Titelblock und die Thumbnail-Option direkt an den Videoblock.
