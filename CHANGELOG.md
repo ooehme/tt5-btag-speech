@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.3 – 2026-07-29
+
+- Editorvorschau rendert Video, Poster, TOP, Sitzung und Quellenlink mit den echten Daten der jeweiligen Rede
+- Artikelbilder bleiben extern und dienen als Video-Poster; redaktionelle Beitragsbilder haben Vorrang
+
 ## 2.0.2 – 2026-07-29
 
 - Rededatum wird primär aus `Sitzung vom TT.MM.JJJJ` im Videotitel gelesen und bei bestehenden Beiträgen korrigiert

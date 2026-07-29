@@ -3,9 +3,10 @@
 
 	const { registerBlockType } = wp.blocks;
 	const { InspectorControls, useBlockProps } = wp.blockEditor;
-	const { PanelBody, SelectControl, TextControl, ToggleControl } = wp.components;
+	const { Disabled, PanelBody, SelectControl, TextControl, ToggleControl } = wp.components;
 	const { createElement: el, Fragment } = wp.element;
 	const { __ } = wp.i18n;
+	const ServerSideRender = wp.serverSideRender.default || wp.serverSideRender;
 
 	const videoAttributes = {
 		display: { type: 'string', default: 'click_to_load' },
@@ -15,8 +16,27 @@
 		aspectRatio: { type: 'string', default: '16/9' },
 	};
 
-	function videoEdit({ attributes, setAttributes }) {
-		const blockProps = useBlockProps({ className: 'mdb-speech-video-editor' });
+	function serverPreview(blockProps, block, attributes, context) {
+		const postId = context && Number(context.postId) > 0 ? Number(context.postId) : 0;
+
+		return el(
+			'div',
+			blockProps,
+			el(
+				Disabled,
+				null,
+				el(ServerSideRender, {
+					block,
+					attributes,
+					urlQueryArgs: postId ? { post_id: postId } : {},
+				})
+			)
+		);
+	}
+
+	function videoEdit({ attributes, setAttributes, context }) {
+		const blockProps = useBlockProps({ className: 'mdb-speech-server-preview' });
+		const previewAttributes = { ...attributes, autoplay: false };
 		return el(
 			Fragment,
 			null,
@@ -59,19 +79,18 @@
 					})
 				)
 			),
-			el(
-				'div',
-				blockProps,
-				el('span', { className: 'dashicons dashicons-video-alt3', 'aria-hidden': true }),
-				el('strong', null, __('Lokales Video der aktuellen Rede', 'mdb-bundestag-speeches')),
-				el('small', null, `${attributes.display} · ${attributes.aspectRatio}`)
-			)
+			serverPreview(blockProps, 'mdb/speech-video', previewAttributes, context)
 		);
 	}
 
-	function fieldEdit(label) {
-		return function Edit() {
-			return el('p', useBlockProps(), label);
+	function fieldEdit(block) {
+		return function Edit({ attributes, context }) {
+			return serverPreview(
+				useBlockProps({ className: 'mdb-speech-server-preview' }),
+				block,
+				attributes,
+				context
+			);
 		};
 	}
 
@@ -92,7 +111,7 @@
 		icon: 'editor-ol',
 		category: 'mdb-speeches',
 		usesContext: ['postId', 'postType'],
-		edit: fieldEdit(__('Tagesordnungspunkt der aktuellen Rede', 'mdb-bundestag-speeches')),
+		edit: fieldEdit('mdb/speech-topic'),
 		save: () => null,
 	});
 
@@ -102,7 +121,7 @@
 		icon: 'groups',
 		category: 'mdb-speeches',
 		usesContext: ['postId', 'postType'],
-		edit: fieldEdit(__('Sitzung der aktuellen Rede', 'mdb-bundestag-speeches')),
+		edit: fieldEdit('mdb/speech-session'),
 		save: () => null,
 	});
 
@@ -116,8 +135,9 @@
 			label: { type: 'string', default: __('Originalquelle: Deutscher Bundestag', 'mdb-bundestag-speeches') },
 			openInNewTab: { type: 'boolean', default: false },
 		},
-		edit: ({ attributes, setAttributes }) =>
-			el(
+		edit: ({ attributes, setAttributes, context }) => {
+			const blockProps = useBlockProps({ className: 'mdb-speech-server-preview' });
+			return el(
 				Fragment,
 				null,
 				el(
@@ -138,8 +158,9 @@
 						})
 					)
 				),
-				el('p', useBlockProps(), attributes.label)
-			),
+				serverPreview(blockProps, 'mdb/speech-source-link', attributes, context)
+			);
+		},
 		save: () => null,
 	});
 })(window.wp);

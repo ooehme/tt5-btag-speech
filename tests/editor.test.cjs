@@ -21,6 +21,8 @@ const PanelBody = Symbol('PanelBody');
 const RangeControl = Symbol('RangeControl');
 const SelectControl = Symbol('SelectControl');
 const ToggleControl = Symbol('ToggleControl');
+const Disabled = Symbol('Disabled');
+const ServerSideRender = Symbol('ServerSideRender');
 
 global.window = {
 	wp: {
@@ -36,6 +38,7 @@ global.window = {
 			createHigherOrderComponent: (enhancer) => enhancer,
 		},
 		components: {
+			Disabled,
 			PanelBody,
 			RangeControl,
 			SelectControl,
@@ -52,6 +55,7 @@ global.window = {
 		i18n: {
 			__: (value) => value,
 		},
+		serverSideRender: ServerSideRender,
 	},
 };
 
@@ -124,11 +128,15 @@ blocks.get('mdb/speech-video').edit({
 	attributes: {
 		display: 'click_to_load',
 		controls: true,
-		autoplay: false,
+		autoplay: true,
 		muted: false,
 		aspectRatio: '16/9',
 	},
 	setAttributes: noop,
+	context: {
+		postId: 7654763,
+		postType: 'mdb_speech',
+	},
 });
 assert.ok(
 	!elements.some((element) => element.props.label === 'Quelle'),
@@ -137,6 +145,67 @@ assert.ok(
 assert.ok(
 	!elements.some((element) => element.props.label === 'Artikelbild als Thumbnail'),
 	'featured image is the fixed video poster source'
+);
+const videoPreview = elements.find(
+	(element) =>
+		element.type === ServerSideRender &&
+		element.props.block === 'mdb/speech-video'
+);
+assert.ok(videoPreview, 'video uses its PHP renderer in the editor');
+assert.equal(videoPreview.props.urlQueryArgs.post_id, 7654763);
+assert.equal(videoPreview.props.attributes.autoplay, false);
+
+blocks.get('mdb/speech-topic').edit({
+	attributes: {},
+	context: {
+		postId: 7654306,
+		postType: 'mdb_speech',
+	},
+});
+const topicPreview = elements.find(
+	(element) =>
+		element.type === ServerSideRender &&
+		element.props.block === 'mdb/speech-topic'
+);
+assert.ok(topicPreview, 'speech fields use their PHP renderers in the editor');
+assert.equal(topicPreview.props.urlQueryArgs.post_id, 7654306);
+
+blocks.get('mdb/speech-session').edit({
+	attributes: {},
+	context: {
+		postId: 7654306,
+		postType: 'mdb_speech',
+	},
+});
+assert.ok(
+	elements.some(
+		(element) =>
+			element.type === ServerSideRender &&
+			element.props.block === 'mdb/speech-session' &&
+			element.props.urlQueryArgs.post_id === 7654306
+	),
+	'session uses its PHP renderer in the editor'
+);
+
+blocks.get('mdb/speech-source-link').edit({
+	attributes: {
+		label: 'Originalquelle',
+		openInNewTab: false,
+	},
+	setAttributes: noop,
+	context: {
+		postId: 7654306,
+		postType: 'mdb_speech',
+	},
+});
+assert.ok(
+	elements.some(
+		(element) =>
+			element.type === ServerSideRender &&
+			element.props.block === 'mdb/speech-source-link' &&
+			element.props.urlQueryArgs.post_id === 7654306
+	),
+	'source link uses its PHP renderer in the editor'
 );
 
 assert.equal(
