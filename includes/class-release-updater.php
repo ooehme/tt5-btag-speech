@@ -10,6 +10,7 @@ use WP_Error;
 final class Release_Updater {
 	private const REPOSITORY = 'ooehme/tt5-btag-speech';
 	private const UPDATE_URI = 'https://github.com/' . self::REPOSITORY;
+	private const PLUGIN_HOMEPAGE = 'https://oliveroehme.de/werkzeuge/tt5-btag-speech/';
 	private const API_URL = 'https://api.github.com/repos/' . self::REPOSITORY . '/releases/latest';
 	private const PACKAGE_BASE = self::UPDATE_URI . '/releases/download/';
 	private const CACHE_KEY = 'mdb_speeches_github_release';
@@ -34,8 +35,17 @@ final class Release_Updater {
 		}
 
 		$release = $this->release();
-		if ( is_wp_error( $release ) || version_compare( $release['version'], MDB_SPEECHES_VERSION, '<=' ) ) {
-			return false;
+		if ( is_wp_error( $release ) ) {
+			return array(
+				'id'           => self::UPDATE_URI,
+				'slug'         => dirname( plugin_basename( MDB_SPEECHES_FILE ) ),
+				'plugin'       => $plugin_file,
+				'version'      => MDB_SPEECHES_VERSION,
+				'url'          => self::PLUGIN_HOMEPAGE,
+				'package'      => '',
+				'tested'       => '7.0',
+				'requires_php' => '8.0',
+			);
 		}
 
 		return array(
@@ -71,7 +81,7 @@ final class Release_Updater {
 			'slug'          => $slug,
 			'version'       => $release['version'],
 			'author'        => '<a href="https://oliveroehme.de/">Oliver Oehme</a>',
-			'homepage'      => self::UPDATE_URI,
+			'homepage'      => self::PLUGIN_HOMEPAGE,
 			'requires'      => '6.7',
 			'requires_php'  => '8.0',
 			'download_link' => $release['package'],

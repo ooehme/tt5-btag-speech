@@ -4,7 +4,7 @@ Tags: bundestag, speeches, video, gutenberg, query loop
 Requires at least: 6.7
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,7 +24,7 @@ Funktionen:
 * dynamische Video-, TOP-, Sitzungs- und Quellenblöcke
 * native Bundestagsreden-Variation von core/query
 * Artikelbild als manuell änderbares Beitragsbild und Video-Poster
-* Beitragsdatum aus dem date-Metatag der Videoseite
+* Beitragsdatum aus „Sitzung vom TT.MM.JJJJ“ im Videotitel
 * lokales Video im Inhalt jedes importierten Beitrags
 * automatische Kategorie Bundestagsrede
 * optionale Click-to-load-Ausgabe
@@ -53,6 +53,12 @@ Der Link zur Originalquelle bleibt verfügbar. Fehlgeschlagene Downloads können
 Plugin-Einstellungen, Locks und Cronjobs werden entfernt. Synchronisierte Beiträge und Medien bleiben als redaktionelle Inhalte erhalten.
 
 == Changelog ==
+
+= 2.0.2 =
+* Liest das Rededatum stabil aus dem Videotitel und korrigiert bestehende Beitragsdaten beim Abgleich.
+* Verwendet bei fehlendem Artikel den bereinigten Videotitel und entfernt veraltete automatisch gesetzte Artikelbilder.
+* Zeigt während des manuellen Abgleichs einen Fortschrittshinweis und ergänzt das Veröffentlichungsdatum in der Statustabelle.
+* Kennzeichnet den GitHub-Updater dauerhaft als unterstützt und ergänzt Plugin- sowie Autorenwebsite.
 
 = 2.0.1 =
 * Ergänzt einen geschützten Komplett-Wipe für Beiträge, Medien und Legacy-Daten.

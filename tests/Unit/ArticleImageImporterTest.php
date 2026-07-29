@@ -58,4 +58,22 @@ final class ArticleImageImporterTest extends TestCase {
 		self::assertSame( 502, $result );
 		self::assertSame( 777, $GLOBALS['mdb_test_thumbnails'][19] );
 	}
+
+	public function test_stale_imported_image_is_disconnected_when_article_is_missing(): void {
+		$GLOBALS['mdb_test_meta'][20] = array(
+			'_mdb_article_image_id'  => 503,
+			'_mdb_article_image_url' => '',
+		);
+		$GLOBALS['mdb_test_meta'][503] = array(
+			'_mdb_article_image_source_url' => 'https://www.bundestag.de/resource/image/stale.jpg',
+		);
+		$GLOBALS['mdb_test_post_types'][503] = 'attachment';
+		$GLOBALS['mdb_test_thumbnails'][20]  = 503;
+
+		$result = ( new Article_Image_Importer( new URL_Resolver() ) )->import( 20 );
+
+		self::assertSame( 0, $result );
+		self::assertFalse( isset( $GLOBALS['mdb_test_meta'][20]['_mdb_article_image_id'] ) );
+		self::assertFalse( isset( $GLOBALS['mdb_test_thumbnails'][20] ) );
+	}
 }

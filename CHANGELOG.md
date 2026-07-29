@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.2 – 2026-07-29
+
+- Rededatum wird primär aus `Sitzung vom TT.MM.JJJJ` im Videotitel gelesen und bei bestehenden Beiträgen korrigiert
+- sichtbarer Fortschrittshinweis während manueller Synchronisierungen und Veröffentlichungsdatum in der Statustabelle
+- fehlende Artikellinks fallen auf den bereinigten Videotitel zurück; veraltete automatisch importierte Artikelbilder werden gelöst
+- automatische Updates werden in der Plugin-Liste als unterstützt erkannt
+- Plugin- und Autorenwebsite auf `oliveroehme.de` aktualisiert
+
 ## 2.0.1 – 2026-07-29
 
 - geschützter Backend-Wipe für synchronisierte Beiträge, Plugin-Medien, Legacy-Locks und Einstellungen

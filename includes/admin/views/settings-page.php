@@ -103,8 +103,16 @@ defined( 'ABSPATH' ) || exit;
 
 	<hr>
 	<h2><?php esc_html_e( 'Aktionen', 'mdb-bundestag-speeches' ); ?></h2>
+	<div id="mdb-speeches-sync-progress" class="notice notice-info inline" role="status" aria-live="polite" hidden>
+		<p><span class="spinner is-active" aria-hidden="true"></span><?php esc_html_e( 'Synchronisierung läuft. Bitte diese Seite geöffnet lassen.', 'mdb-bundestag-speeches' ); ?></p>
+	</div>
 	<div style="display:flex;gap:8px;flex-wrap:wrap">
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+		<form
+			id="mdb-speeches-sync-form"
+			method="post"
+			action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+			data-progress-label="<?php echo esc_attr__( 'Synchronisierung läuft …', 'mdb-bundestag-speeches' ); ?>"
+		>
 			<input type="hidden" name="action" value="mdb_speeches_sync">
 			<?php wp_nonce_field( 'mdb_speeches_sync' ); ?>
 			<?php submit_button( __( 'Jetzt synchronisieren', 'mdb-bundestag-speeches' ), 'primary', 'submit', false ); ?>
@@ -140,6 +148,7 @@ defined( 'ABSPATH' ) || exit;
 			<th><?php esc_html_e( 'Rede', 'mdb-bundestag-speeches' ); ?></th>
 			<th><?php esc_html_e( 'Video-ID', 'mdb-bundestag-speeches' ); ?></th>
 			<th><?php esc_html_e( 'Artikeltitel', 'mdb-bundestag-speeches' ); ?></th>
+			<th><?php esc_html_e( 'Veröffentlichungsdatum', 'mdb-bundestag-speeches' ); ?></th>
 			<th><?php esc_html_e( 'Artikelbild-URL', 'mdb-bundestag-speeches' ); ?></th>
 			<th><?php esc_html_e( 'Status', 'mdb-bundestag-speeches' ); ?></th>
 			<th><?php esc_html_e( 'Zuletzt gesehen', 'mdb-bundestag-speeches' ); ?></th>
@@ -147,7 +156,7 @@ defined( 'ABSPATH' ) || exit;
 		</tr></thead>
 		<tbody>
 		<?php if ( array() === $speeches ) : ?>
-			<tr><td colspan="7"><?php esc_html_e( 'Noch keine Reden synchronisiert.', 'mdb-bundestag-speeches' ); ?></td></tr>
+			<tr><td colspan="8"><?php esc_html_e( 'Noch keine Reden synchronisiert.', 'mdb-bundestag-speeches' ); ?></td></tr>
 		<?php else : ?>
 			<?php foreach ( $speeches as $speech ) : ?>
 				<?php $article_image_url = (string) get_post_meta( $speech->ID, '_mdb_article_image_url', true ); ?>
@@ -155,6 +164,7 @@ defined( 'ABSPATH' ) || exit;
 					<td><a href="<?php echo esc_url( get_edit_post_link( $speech->ID ) ); ?>"><?php echo esc_html( get_the_title( $speech ) ); ?></a></td>
 					<td><?php echo esc_html( (string) get_post_meta( $speech->ID, '_mdb_video_id', true ) ); ?></td>
 					<td><?php echo esc_html( (string) get_post_meta( $speech->ID, '_mdb_article_title', true ) ); ?></td>
+					<td><?php echo esc_html( (string) get_post_meta( $speech->ID, '_mdb_source_date', true ) ); ?></td>
 					<td style="overflow-wrap:anywhere">
 						<?php if ( '' !== $article_image_url ) : ?>
 							<a href="<?php echo esc_url( $article_image_url ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $article_image_url ); ?></a>

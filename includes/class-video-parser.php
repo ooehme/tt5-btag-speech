@@ -49,20 +49,7 @@ final class Video_Parser {
 			throw new Parser_Exception( 'Auf der Bundestag-Videoseite wurde kein Titel gefunden. Möglicherweise hat sich die HTML-Struktur geändert.' );
 		}
 
-		$date = $this->meta_date( $xpath );
-		if ( '' !== $date ) {
-			$date = $this->normalize( $date );
-		} elseif ( preg_match( '/\b(\d{1,2}\.\d{1,2}\.\d{4})\b/u', $title, $matches ) ) {
-			$date = $matches[1];
-		} else {
-			$date = $this->first_text(
-				$xpath,
-				array(
-					'//*[contains(concat(" ", normalize-space(@class), " "), " m-videos__roofline ")]',
-					'//time',
-				)
-			);
-		}
+		$date = $this->title_date( $title );
 
 		$session = preg_match( '/\b(\d+\.\s*Sitzung)\b/ui', $title, $matches ) ? $this->normalize( $matches[1] ) : '';
 		$topic   = preg_match( '/\b(TOP\s+[A-Za-z0-9.\-\/]+(?:\s+[A-Za-z0-9.\-\/]+)?)\s*:/ui', $title, $matches )
@@ -81,24 +68,35 @@ final class Video_Parser {
 		);
 	}
 
+	private function title_date( string $title ): string {
+		if ( preg_match( '/\bSitzung\s+vom\s+(\d{1,2}\.\d{1,2}\.\d{4})\b/ui', $title, $matches ) ) {
+			return $matches[1];
+		}
+		return preg_match( '/\b(\d{1,2}\.\d{1,2}\.\d{4})\b/u', $title, $matches ) ? $matches[1] : '';
+	}
+
 	private function article_url( DOMXPath $xpath ): string {
-		foreach (
-			array(
-				'//main//a[contains(translate(normalize-space(.), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "zum artikel")]',
-				'//main//a[contains(@href, "/dokumente/textarchiv/")]',
-				'//a[contains(@href, "/dokumente/textarchiv/")]',
-			) as $query
-		) {
-			$nodes = $xpath->query( $query );
-			if ( false !== $nodes && $nodes->length > 0 && $nodes->item( 0 ) instanceof DOMElement ) {
-				$url = trim( $nodes->item( 0 )->getAttribute( 'href' ) );
-				if ( '' !== $url ) {
-					return $url;
+		$nodes = $xpath->query(
+			'//main//a[contains(translate(normalize-space(.), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "zum artikel")]'
+		);
+		if ( false !== $nodes ) {
+			foreach ( $nodes as $node ) {
+				if ( $node instanceof DOMElement ) {
+					$url = trim( $node->getAttribute( 'href' ) );
+					if ( $this->is_article_url( $url ) ) {
+						return $url;
+					}
 				}
 			}
 		}
 
 		return '';
+	}
+
+	private function is_article_url( string $url ): bool {
+		$path = parse_url( html_entity_decode( $url, ENT_QUOTES | ENT_HTML5, 'UTF-8' ), PHP_URL_PATH );
+		return is_string( $path )
+			&& 1 === preg_match( '#^/dokumente/textarchiv/\d{4}/[^/]+-\d+/?$#D', $path );
 	}
 
 	private function video_id( DOMXPath $xpath ): string {
@@ -118,16 +116,6 @@ final class Video_Parser {
 			}
 		}
 		return '';
-	}
-
-	private function meta_date( DOMXPath $xpath ): string {
-		$nodes = $xpath->query(
-			'//meta[translate(@name, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz") = "date"][@content]'
-		);
-		if ( false === $nodes || 0 === $nodes->length || ! ( $nodes->item( 0 ) instanceof DOMElement ) ) {
-			return '';
-		}
-		return $nodes->item( 0 )->getAttribute( 'content' );
 	}
 
 	private function xpath( string $html ): DOMXPath {
@@ -168,22 +156,6 @@ final class Video_Parser {
 			}
 		}
 		return $this->normalize( (string) $copy->textContent );
-	}
-
-	/**
-	 * @param array<int,string> $queries XPath fallbacks.
-	 */
-	private function first_text( DOMXPath $xpath, array $queries ): string {
-		foreach ( $queries as $query ) {
-			$nodes = $xpath->query( $query );
-			if ( false !== $nodes && $nodes->length > 0 ) {
-				$text = $this->normalize( (string) $nodes->item( 0 )?->textContent );
-				if ( '' !== $text ) {
-					return $text;
-				}
-			}
-		}
-		return '';
 	}
 
 	private function breadcrumb_topic( DOMXPath $xpath ): string {

@@ -16,11 +16,22 @@ final class Article_Image_Importer {
 	 */
 	public function import( int $post_id ): int|WP_Error {
 		$attachment_id = (int) get_post_meta( $post_id, '_mdb_article_image_id', true );
-		if ( $attachment_id > 0 && 'attachment' === get_post_type( $attachment_id ) ) {
-			return $attachment_id;
+		$url           = (string) get_post_meta( $post_id, '_mdb_article_image_url', true );
+		if ( $attachment_id > 0 ) {
+			$attachment_source = (string) get_post_meta( $attachment_id, '_mdb_article_image_source_url', true );
+			if (
+				'' !== $url
+				&& esc_url_raw( $url ) === $attachment_source
+				&& 'attachment' === get_post_type( $attachment_id )
+			) {
+				return $attachment_id;
+			}
+			delete_post_meta( $post_id, '_mdb_article_image_id' );
+			if ( $attachment_id === get_post_thumbnail_id( $post_id ) ) {
+				delete_post_thumbnail( $post_id );
+			}
 		}
 
-		$url = (string) get_post_meta( $post_id, '_mdb_article_image_url', true );
 		if ( '' === $url ) {
 			return 0;
 		}

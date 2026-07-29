@@ -19,11 +19,25 @@ final class Admin {
 
 	public function register(): void {
 		add_action( 'admin_menu', array( $this, 'menu' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'assets' ) );
 		add_action( 'admin_post_mdb_speeches_sync', array( $this, 'sync' ) );
 		add_action( 'admin_post_mdb_speeches_retry', array( $this, 'retry' ) );
 		add_action( 'admin_post_mdb_speeches_download', array( $this, 'download' ) );
 		add_action( 'admin_post_mdb_speeches_wipe', array( $this, 'wipe' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( MDB_SPEECHES_FILE ), array( $this, 'action_links' ) );
+	}
+
+	public function assets( string $hook_suffix ): void {
+		if ( Speech_Repository::POST_TYPE . '_page_' . self::PAGE !== $hook_suffix ) {
+			return;
+		}
+		wp_enqueue_script(
+			'mdb-speeches-admin',
+			MDB_SPEECHES_URL . 'assets/admin.js',
+			array(),
+			MDB_SPEECHES_VERSION,
+			true
+		);
 	}
 
 	public function menu(): void {

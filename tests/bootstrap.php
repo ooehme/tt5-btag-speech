@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/phpunit-shim.php';
 
 define( 'ABSPATH', dirname( __DIR__ ) . DIRECTORY_SEPARATOR );
-define( 'MDB_SPEECHES_VERSION', '2.0.1' );
+define( 'MDB_SPEECHES_VERSION', '2.0.2' );
 define( 'MDB_SPEECHES_DIR', dirname( __DIR__ ) . DIRECTORY_SEPARATOR );
 define( 'MDB_SPEECHES_URL', 'https://example.test/wp-content/plugins/mdb-bundestag-speeches/' );
 define( 'MDB_SPEECHES_FILE', MDB_SPEECHES_DIR . 'mdb-bundestag-speeches.php' );
@@ -87,6 +87,7 @@ $GLOBALS['mdb_test_deleted_media']   = array();
 $GLOBALS['mdb_test_deleted_options'] = array();
 $GLOBALS['mdb_test_cleared_hooks']   = array();
 $GLOBALS['mdb_test_cron_array']      = array();
+$GLOBALS['mdb_site_transients']      = array();
 
 function __( string $text, string $domain = '' ): string {
 	return $text;
@@ -251,6 +252,17 @@ function add_query_arg( string $key, string $value, string $url ): string {
 function get_option( string $key, mixed $default = false ): mixed {
 	return $GLOBALS['mdb_test_options'][ $key ] ?? $default;
 }
+function get_site_transient( string $transient ): mixed {
+	return $GLOBALS['mdb_site_transients'][ $transient ] ?? false;
+}
+function set_site_transient( string $transient, mixed $value, int $expiration = 0 ): bool {
+	$GLOBALS['mdb_site_transients'][ $transient ] = $value;
+	return true;
+}
+function plugin_basename( string $file ): string {
+	$file = str_replace( '\\', '/', $file );
+	return basename( dirname( $file ) ) . '/' . basename( $file );
+}
 function home_url( string $path = '' ): string {
 	return 'https://example.test' . $path;
 }
@@ -312,5 +324,14 @@ function has_post_thumbnail( int $post_id ): bool {
 }
 function set_post_thumbnail( int $post_id, int $attachment_id ): bool {
 	$GLOBALS['mdb_test_thumbnails'][ $post_id ] = $attachment_id;
+	return true;
+}
+function get_post_thumbnail_id( int $post_id ): int|false {
+	return isset( $GLOBALS['mdb_test_thumbnails'][ $post_id ] )
+		? (int) $GLOBALS['mdb_test_thumbnails'][ $post_id ]
+		: false;
+}
+function delete_post_thumbnail( int $post_id ): bool {
+	unset( $GLOBALS['mdb_test_thumbnails'][ $post_id ] );
 	return true;
 }
