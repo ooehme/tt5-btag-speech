@@ -15,7 +15,7 @@ final class Settings {
 			'speaker_id'     => '12404',
 			'speaker_filter' => '21244 OR 12404',
 			'interval'       => 'twicedaily',
-			'download_mode'  => 'embed_only',
+			'download_mode'  => 'automatic',
 			'quality'        => '1080p_8000',
 			'max_file_size'  => 750,
 		);
@@ -38,7 +38,11 @@ final class Settings {
 	 */
 	public function all(): array {
 		$value = get_option( self::OPTION, array() );
-		return array_merge( self::defaults(), is_array( $value ) ? $value : array() );
+		$settings = array_merge( self::defaults(), is_array( $value ) ? $value : array() );
+		if ( ! in_array( (string) $settings['download_mode'], array( 'automatic', 'local' ), true ) ) {
+			$settings['download_mode'] = 'automatic';
+		}
+		return $settings;
 	}
 
 	public function get( string $key ): mixed {
@@ -75,7 +79,7 @@ final class Settings {
 			$interval = (string) $defaults['interval'];
 		}
 
-		$modes = array( 'embed_only', 'automatic', 'local' );
+		$modes = array( 'automatic', 'local' );
 		$mode  = isset( $input['download_mode'] ) ? sanitize_key( (string) $input['download_mode'] ) : '';
 		if ( ! in_array( $mode, $modes, true ) ) {
 			$mode = (string) $defaults['download_mode'];

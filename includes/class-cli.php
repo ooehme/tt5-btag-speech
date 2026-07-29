@@ -42,7 +42,7 @@ final class CLI {
 	public function download(): void {
 		$ids     = $this->repository->ids_by_status(
 			array(
-				Sync_Status::EMBED_AVAILABLE,
+				Sync_Status::DOWNLOAD_AVAILABLE,
 				Sync_Status::DOWNLOAD_PENDING,
 				Sync_Status::DOWNLOAD_FAILED,
 			)

@@ -10,7 +10,6 @@
 	width: 100%;
 }
 
-.mdb-speech-video__frame > iframe,
 .mdb-speech-video__frame > video,
 .mdb-speech-video__load,
 .mdb-speech-video__poster {

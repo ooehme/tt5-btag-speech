@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/phpunit-shim.php';
 
 define( 'ABSPATH', dirname( __DIR__ ) . DIRECTORY_SEPARATOR );
-define( 'MDB_SPEECHES_VERSION', '1.1.3' );
+define( 'MDB_SPEECHES_VERSION', '2.0.0' );
 define( 'MDB_SPEECHES_DIR', dirname( __DIR__ ) . DIRECTORY_SEPARATOR );
 define( 'MDB_SPEECHES_URL', 'https://example.test/wp-content/plugins/mdb-bundestag-speeches/' );
 define( 'MDB_SPEECHES_FILE', MDB_SPEECHES_DIR . 'mdb-bundestag-speeches.php' );
@@ -69,15 +69,18 @@ if ( ! class_exists( 'WP_Query' ) ) {
 	}
 }
 
-$GLOBALS['mdb_test_meta']        = array();
-$GLOBALS['mdb_test_attachments'] = array();
-$GLOBALS['mdb_test_post_types']  = array();
-$GLOBALS['mdb_test_thumbnails']  = array();
-$GLOBALS['mdb_test_titles']      = array();
-$GLOBALS['mdb_test_options']     = array();
-$GLOBALS['mdb_http_head']        = null;
-$GLOBALS['mdb_http_get']         = null;
-$GLOBALS['mdb_http_get_queue']   = array();
+$GLOBALS['mdb_test_meta']           = array();
+$GLOBALS['mdb_test_attachments']    = array();
+$GLOBALS['mdb_test_post_types']     = array();
+$GLOBALS['mdb_test_thumbnails']     = array();
+$GLOBALS['mdb_test_titles']         = array();
+$GLOBALS['mdb_test_contents']       = array();
+$GLOBALS['mdb_test_terms']          = array();
+$GLOBALS['mdb_test_taxonomy_terms'] = array();
+$GLOBALS['mdb_test_options']        = array();
+$GLOBALS['mdb_http_head']           = null;
+$GLOBALS['mdb_http_get']            = null;
+$GLOBALS['mdb_http_get_queue']      = array();
 
 function __( string $text, string $domain = '' ): string {
 	return $text;
@@ -143,6 +146,26 @@ function update_post_meta( int $post_id, string $key, mixed $value ): void {
 function delete_post_meta( int $post_id, string $key ): void {
 	unset( $GLOBALS['mdb_test_meta'][ $post_id ][ $key ] );
 }
+function term_exists( int|string $term, string $taxonomy = '', int $parent = 0 ): array|int|null {
+	foreach ( $GLOBALS['mdb_test_taxonomy_terms'][ $taxonomy ] ?? array() as $term_id => $stored ) {
+		if ( (string) $term === (string) $term_id || (string) $term === $stored['name'] || (string) $term === $stored['slug'] ) {
+			return array( 'term_id' => (string) $term_id, 'term_taxonomy_id' => (string) $term_id );
+		}
+	}
+	return null;
+}
+function wp_insert_term( string $term, string $taxonomy, array $args = array() ): array|WP_Error {
+	$term_id = count( $GLOBALS['mdb_test_taxonomy_terms'][ $taxonomy ] ?? array() ) + 1;
+	$GLOBALS['mdb_test_taxonomy_terms'][ $taxonomy ][ $term_id ] = array(
+		'name' => $term,
+		'slug' => (string) ( $args['slug'] ?? sanitize_key( $term ) ),
+	);
+	return array( 'term_id' => $term_id, 'term_taxonomy_id' => $term_id );
+}
+function wp_set_object_terms( int $object_id, string|int|array $terms, string $taxonomy, bool $append = false ): array|WP_Error {
+	$GLOBALS['mdb_test_terms'][ $object_id ][ $taxonomy ] = (array) $terms;
+	return array_map( 'intval', (array) $terms );
+}
 function get_post_type( int $post_id ): string|false {
 	return $GLOBALS['mdb_test_post_types'][ $post_id ] ?? false;
 }
@@ -158,6 +181,13 @@ function get_permalink( int $post_id ): string {
 function get_the_title( mixed $post = 0 ): string {
 	$post_id = is_object( $post ) ? (int) $post->ID : (int) $post;
 	return $GLOBALS['mdb_test_titles'][ $post_id ] ?? 'Testrede';
+}
+function get_post_field( string $field, int $post_id ): mixed {
+	return 'post_content' === $field ? ( $GLOBALS['mdb_test_contents'][ $post_id ] ?? '' ) : '';
+}
+function get_the_post_thumbnail_url( int $post_id, string|array $size = 'post-thumbnail' ): string|false {
+	$attachment_id = (int) ( $GLOBALS['mdb_test_thumbnails'][ $post_id ] ?? 0 );
+	return $attachment_id > 0 ? ( $GLOBALS['mdb_test_attachments'][ $attachment_id ] ?? false ) : false;
 }
 function get_block_wrapper_attributes( array $extra = array() ): string {
 	return isset( $extra['class'] ) ? 'class="' . esc_attr( (string) $extra['class'] ) . '"' : '';

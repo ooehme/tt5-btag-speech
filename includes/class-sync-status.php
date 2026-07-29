@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MDB\BundestagSpeeches;
 
 final class Sync_Status {
-	public const EMBED_AVAILABLE = 'embed_available';
+	public const DOWNLOAD_AVAILABLE = 'download_available';
 	public const DOWNLOAD_PENDING = 'download_pending';
 	public const DOWNLOADED = 'downloaded';
 	public const DOWNLOAD_FAILED = 'download_failed';
@@ -19,13 +19,13 @@ final class Sync_Status {
 		if ( self::DOWNLOAD_FAILED === $previous ) {
 			return self::DOWNLOAD_FAILED;
 		}
-		return 'automatic' === $mode ? self::DOWNLOAD_PENDING : self::EMBED_AVAILABLE;
+		return 'automatic' === $mode ? self::DOWNLOAD_PENDING : self::DOWNLOAD_AVAILABLE;
 	}
 
 	public static function is_downloadable( string $status ): bool {
 		return in_array(
 			$status,
-			array( self::EMBED_AVAILABLE, self::DOWNLOAD_PENDING, self::DOWNLOAD_FAILED, self::SYNC_ERROR ),
+			array( self::DOWNLOAD_AVAILABLE, self::DOWNLOAD_PENDING, self::DOWNLOAD_FAILED, self::SYNC_ERROR ),
 			true
 		);
 	}
@@ -35,7 +35,7 @@ final class Sync_Status {
 	 */
 	public static function all(): array {
 		return array(
-			self::EMBED_AVAILABLE,
+			self::DOWNLOAD_AVAILABLE,
 			self::DOWNLOAD_PENDING,
 			self::DOWNLOADED,
 			self::DOWNLOAD_FAILED,

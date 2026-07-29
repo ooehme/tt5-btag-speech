@@ -70,7 +70,6 @@ final class Source_Client {
 
 		$metadata['video_id']     = $video_id;
 		$metadata['source_url']   = $this->urls->video_url( $video_id );
-		$metadata['embed_url']    = $this->urls->embed_url( $video_id );
 		try {
 			$metadata['download_url'] = $this->urls->download_url( $video_id, $quality );
 		} catch ( \InvalidArgumentException $exception ) {

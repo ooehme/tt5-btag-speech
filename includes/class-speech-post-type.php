@@ -29,7 +29,7 @@ final class Speech_Post_Type {
 				'rewrite'          => array( 'slug' => 'bundestagsreden' ),
 				'menu_icon'        => 'dashicons-video-alt3',
 				'supports'         => array( 'title', 'editor', 'thumbnail', 'custom-fields' ),
-				'taxonomies'       => array(),
+				'taxonomies'       => array( 'category' ),
 				'delete_with_user' => false,
 			)
 		);
@@ -70,7 +70,6 @@ final class Speech_Post_Type {
 			'_mdb_video_id'           => 'string',
 			'_mdb_source_title'       => 'string',
 			'_mdb_source_url'         => 'string',
-			'_mdb_embed_url'          => 'string',
 			'_mdb_download_url'       => 'string',
 			'_mdb_attachment_id'      => 'integer',
 			'_mdb_article_url'        => 'string',

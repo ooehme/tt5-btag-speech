@@ -49,8 +49,10 @@ final class Video_Parser {
 			throw new Parser_Exception( 'Auf der Bundestag-Videoseite wurde kein Titel gefunden. Möglicherweise hat sich die HTML-Struktur geändert.' );
 		}
 
-		$date = '';
-		if ( preg_match( '/\b(\d{1,2}\.\d{1,2}\.\d{4})\b/u', $title, $matches ) ) {
+		$date = $this->meta_date( $xpath );
+		if ( '' !== $date ) {
+			$date = $this->normalize( $date );
+		} elseif ( preg_match( '/\b(\d{1,2}\.\d{1,2}\.\d{4})\b/u', $title, $matches ) ) {
 			$date = $matches[1];
 		} else {
 			$date = $this->first_text(
@@ -116,6 +118,16 @@ final class Video_Parser {
 			}
 		}
 		return '';
+	}
+
+	private function meta_date( DOMXPath $xpath ): string {
+		$nodes = $xpath->query(
+			'//meta[translate(@name, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz") = "date"][@content]'
+		);
+		if ( false === $nodes || 0 === $nodes->length || ! ( $nodes->item( 0 ) instanceof DOMElement ) ) {
+			return '';
+		}
+		return $nodes->item( 0 )->getAttribute( 'content' );
 	}
 
 	private function xpath( string $html ): DOMXPath {

@@ -32,14 +32,12 @@
 				[
 					[
 						'mdb/speech-video',
-						{ source: 'auto', display: 'click_to_load', useArticleImage: true },
+						{ display: 'click_to_load' },
 					],
 					[
 						'core/post-title',
 						{
 							isLink: true,
-							className:
-								'mdb-speech-title--remove-speaker mdb-speech-title--article-title',
 						},
 					],
 					['core/post-date'],

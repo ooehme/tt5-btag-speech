@@ -6,15 +6,17 @@ Produktionsfähiges WordPress-Plugin zum Synchronisieren und Darstellen von Rede
 
 - konfigurierbare Bundestag-Redner-ID und interne Filter-IDs
 - idempotenter Import als öffentlicher Custom Post Type `mdb_speech`
-- redaktioneller Beitragstitel bleibt bei späteren Synchronisierungen unverändert
-- Embed-only-, automatischer und manueller lokaler Downloadmodus
+- Artikeltitel als echter Beitragstitel mit bereinigtem Videotitel als Fallback
+- automatischer oder manuell gestarteter lokaler Download
 - gestreamter MP4-Import mit Host-, Status-, MIME- und Größenprüfung
 - `HEAD`-Prüfung mit begrenztem `Range: bytes=0-0`-Fallback
 - WP-Cron, Synchronisations- und Download-Locks sowie WP-CLI
 - dynamische Gutenberg-Blöcke und eine native `core/query`-Variation
-- optionale Artikeltitel und Artikelbilder mit sicherem Fallback auf die Videodaten
-- entfernte Artikelbilder im Embed-Modus, deduplizierter Bildimport bei lokalen Downloads
-- datenschutzfreundliche Click-to-load-Ausgabe
+- Artikelbild als echtes, redaktionell änderbares Beitragsbild
+- Beitragsdatum aus dem `date`-Metatag der Bundestag-Videoseite
+- lokales Video als Inhalt jedes importierten Beitrags
+- automatische Kategorie `Bundestagsrede`
+- optionale Click-to-load-Ausgabe
 - GitHub-Release-Updates, sobald Releases im Repository verfügbar sind
 
 ## Anforderungen
@@ -37,7 +39,7 @@ Weitere Hinweise stehen in [docs/installation.md](docs/installation.md).
 
 Verfügbar sind:
 
-- `mdb/speech-video` mit `auto`, `local` und `embed`
+- `mdb/speech-video` für das lokal gespeicherte Video
 - `mdb/speech-topic`
 - `mdb/speech-session`
 - `mdb/speech-source-link`
@@ -45,7 +47,7 @@ Verfügbar sind:
 
 Der Videoblock liest im Core Query Loop den aktuellen `postId`-Kontext. Das `core/post-template` bleibt frei gestaltbar; Pagination übernehmen die Core-Blöcke.
 
-Die Query-Variation bietet Anzahl, Sortierung und Offset. Die Optionen für gekürzte Redentitel und Artikeltitel befinden sich direkt am Titelblock; das Artikelbild wird direkt am Videoblock aktiviert. Fehlende Artikelmetadaten ändern die normale Ausgabe nicht.
+Die Query-Variation bietet Anzahl, Sortierung und Offset. Titel und Videovorschaubild stammen direkt aus Beitragstitel und Beitragsbild. Fehlen Artikelmetadaten, wird der um `: Rede von …` bereinigte Videotitel verwendet.
 
 ## WP-CLI
 

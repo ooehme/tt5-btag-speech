@@ -1,20 +1,17 @@
 (function (wp) {
 	'use strict';
 
-	const { registerBlockType, registerBlockVariation } = wp.blocks;
+	const { registerBlockType } = wp.blocks;
 	const { InspectorControls, useBlockProps } = wp.blockEditor;
 	const { PanelBody, SelectControl, TextControl, ToggleControl } = wp.components;
 	const { createElement: el, Fragment } = wp.element;
 	const { __ } = wp.i18n;
 
 	const videoAttributes = {
-		useArticleImage: { type: 'boolean' },
-		source: { type: 'string', default: 'auto' },
 		display: { type: 'string', default: 'click_to_load' },
 		controls: { type: 'boolean', default: true },
 		autoplay: { type: 'boolean', default: false },
 		muted: { type: 'boolean', default: false },
-		poster: { type: 'string', default: '' },
 		aspectRatio: { type: 'string', default: '16/9' },
 	};
 
@@ -29,16 +26,6 @@
 				el(
 					PanelBody,
 					{ title: __('Videoeinstellungen', 'mdb-bundestag-speeches') },
-					el(SelectControl, {
-						label: __('Quelle', 'mdb-bundestag-speeches'),
-						value: attributes.source,
-						options: [
-							{ label: __('Automatisch', 'mdb-bundestag-speeches'), value: 'auto' },
-							{ label: __('Lokales Video', 'mdb-bundestag-speeches'), value: 'local' },
-							{ label: __('Bundestag-Embed', 'mdb-bundestag-speeches'), value: 'embed' },
-						],
-						onChange: (source) => setAttributes({ source }),
-					}),
 					el(SelectControl, {
 						label: __('Darstellung', 'mdb-bundestag-speeches'),
 						value: attributes.display,
@@ -69,21 +56,6 @@
 						label: __('Stumm', 'mdb-bundestag-speeches'),
 						checked: attributes.muted,
 						onChange: (muted) => setAttributes({ muted }),
-					}),
-					el(ToggleControl, {
-						label: __('Artikelbild als Thumbnail', 'mdb-bundestag-speeches'),
-						help: __(
-							'Verwendet das importierte Artikelbild, falls eines verfügbar ist.',
-							'mdb-bundestag-speeches'
-						),
-						checked: attributes.useArticleImage ?? true,
-						onChange: (useArticleImage) => setAttributes({ useArticleImage }),
-					}),
-					el(TextControl, {
-						label: __('Poster-URL', 'mdb-bundestag-speeches'),
-						type: 'url',
-						value: attributes.poster,
-						onChange: (poster) => setAttributes({ poster }),
 					})
 				)
 			),
@@ -91,12 +63,8 @@
 				'div',
 				blockProps,
 				el('span', { className: 'dashicons dashicons-video-alt3', 'aria-hidden': true }),
-				el('strong', null, __('Bundestag-Video der aktuellen Rede', 'mdb-bundestag-speeches')),
-				el(
-					'small',
-					null,
-					`${attributes.source} · ${attributes.display} · ${attributes.aspectRatio}`
-				)
+				el('strong', null, __('Lokales Video der aktuellen Rede', 'mdb-bundestag-speeches')),
+				el('small', null, `${attributes.display} · ${attributes.aspectRatio}`)
 			)
 		);
 	}
@@ -174,25 +142,4 @@
 			),
 		save: () => null,
 	});
-
-	registerBlockVariation('mdb/speech-video', {
-		name: 'automatic',
-		title: __('Bundestag-Video automatisch', 'mdb-bundestag-speeches'),
-		attributes: { source: 'auto', display: 'click_to_load' },
-		isDefault: true,
-		scope: ['inserter', 'transform'],
-	});
-	registerBlockVariation('mdb/speech-video', {
-		name: 'embed',
-		title: __('Bundestag-Embed', 'mdb-bundestag-speeches'),
-		attributes: { source: 'embed', display: 'click_to_load' },
-		scope: ['inserter', 'transform'],
-	});
-	registerBlockVariation('mdb/speech-video', {
-		name: 'local',
-		title: __('Lokales Bundestag-Video', 'mdb-bundestag-speeches'),
-		attributes: { source: 'local', display: 'direct' },
-		scope: ['inserter', 'transform'],
-	});
-
 })(window.wp);

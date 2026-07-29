@@ -39,4 +39,23 @@ final class ArticleImageImporterTest extends TestCase {
 		$GLOBALS['mdb_test_meta'][18]['_mdb_article_image_url'] = 'https://attacker.test/image.jpg';
 		self::assertInstanceOf( WP_Error::class, $importer->import( 18 ) );
 	}
+
+	public function test_import_does_not_overwrite_manually_selected_featured_image(): void {
+		$GLOBALS['mdb_test_meta'][19] = array(
+			'_mdb_article_title'     => 'Artikel',
+			'_mdb_article_image_url' => 'https://www.bundestag.de/resource/image/1184450/article.jpg',
+		);
+		$GLOBALS['mdb_test_thumbnails'][19] = 777;
+		$GLOBALS['mdb_http_get'] = array(
+			'response' => array( 'code' => 200 ),
+			'headers'  => array( 'content-type' => 'image/jpeg' ),
+			'body'     => 'test-image-content',
+		);
+		$GLOBALS['mdb_media_sideload_result'] = 502;
+
+		$result = ( new Article_Image_Importer( new URL_Resolver() ) )->import( 19 );
+
+		self::assertSame( 502, $result );
+		self::assertSame( 777, $GLOBALS['mdb_test_thumbnails'][19] );
+	}
 }

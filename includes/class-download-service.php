@@ -115,7 +115,7 @@ final class Download_Service {
 	public function queue_available(): array {
 		return $this->queue(
 			array(
-				Sync_Status::EMBED_AVAILABLE,
+				Sync_Status::DOWNLOAD_AVAILABLE,
 				Sync_Status::DOWNLOAD_PENDING,
 				Sync_Status::DOWNLOAD_FAILED,
 			)

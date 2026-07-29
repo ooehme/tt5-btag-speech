@@ -17,7 +17,6 @@ final class Speech_Repository {
 	private const META_MAP = array(
 		'title'             => '_mdb_source_title',
 		'source_url'        => '_mdb_source_url',
-		'embed_url'         => '_mdb_embed_url',
 		'download_url'      => '_mdb_download_url',
 		'article_url'       => '_mdb_article_url',
 		'article_title'     => '_mdb_article_title',
@@ -65,13 +64,16 @@ final class Speech_Repository {
 			return new WP_Error( 'mdb_invalid_video_id', __( 'Die Rede enthält keine gültige Video-ID.', 'mdb-bundestag-speeches' ) );
 		}
 
-		$post_id   = $this->find_by_video_id( $video_id );
-		$post_date = $this->post_date( (string) ( $speech['date'] ?? '' ) );
+		$post_id      = $this->find_by_video_id( $video_id );
+		$post_date    = $this->post_date( (string) ( $speech['date'] ?? '' ) );
+		$post_title   = $this->post_title( $speech, $video_id );
+		$post_content = '<!-- wp:mdb/speech-video {"display":"direct"} /-->';
 		if ( 0 === $post_id ) {
 			$postarr = array(
-				'post_type'   => self::POST_TYPE,
-				'post_status' => 'publish',
-				'post_title'  => sanitize_text_field( $speech['title'] ?? sprintf( __( 'Bundestagsrede %s', 'mdb-bundestag-speeches' ), $video_id ) ),
+				'post_type'    => self::POST_TYPE,
+				'post_status'  => 'publish',
+				'post_title'   => $post_title,
+				'post_content' => $post_content,
 			);
 			if ( null !== $post_date ) {
 				$postarr['post_date']     = $post_date;
@@ -84,17 +86,23 @@ final class Speech_Repository {
 			}
 			$post_id = (int) $inserted;
 			update_post_meta( $post_id, '_mdb_video_id', $video_id );
-		} elseif ( null !== $post_date ) {
-			$updated = wp_update_post(
-				wp_slash(
-					array(
-						'ID'            => $post_id,
-						'post_date'     => $post_date,
-						'post_date_gmt' => get_gmt_from_date( $post_date ),
-					)
-				),
-				true
+		} else {
+			$postarr = array(
+				'ID'         => $post_id,
+				'post_title' => $post_title,
 			);
+			$existing_content = (string) get_post_field( 'post_content', $post_id );
+			if ( ! str_contains( $existing_content, 'wp:mdb/speech-video' ) ) {
+				$postarr['post_content'] = '' === trim( $existing_content )
+					? $post_content
+					: $post_content . "\n\n" . $existing_content;
+			}
+			if ( null !== $post_date ) {
+				$postarr['post_date']     = $post_date;
+				$postarr['post_date_gmt'] = get_gmt_from_date( $post_date );
+			}
+
+			$updated = wp_update_post( wp_slash( $postarr ), true );
 			if ( is_wp_error( $updated ) ) {
 				return $updated;
 			}
@@ -103,12 +111,17 @@ final class Speech_Repository {
 		foreach ( self::META_MAP as $field => $meta_key ) {
 			$value = in_array(
 				$field,
-				array( 'source_url', 'embed_url', 'download_url', 'article_url', 'article_image_url' ),
+				array( 'source_url', 'download_url', 'article_url', 'article_image_url' ),
 				true
 			)
 				? esc_url_raw( (string) ( $speech[ $field ] ?? '' ) )
 				: sanitize_text_field( (string) ( $speech[ $field ] ?? '' ) );
 			update_post_meta( $post_id, $meta_key, $value );
+		}
+
+		$category_error = $this->assign_category( $post_id );
+		if ( $category_error instanceof WP_Error ) {
+			return $category_error;
 		}
 
 		$attachment_id = (int) get_post_meta( $post_id, '_mdb_attachment_id', true );
@@ -229,5 +242,49 @@ final class Speech_Repository {
 			return null;
 		}
 		return $parsed->setTime( 12, 0 )->format( 'Y-m-d H:i:s' );
+	}
+
+	/**
+	 * @param array<string,string> $speech Normalized source record.
+	 */
+	private function post_title( array $speech, string $video_id ): string {
+		$article_title = sanitize_text_field( (string) ( $speech['article_title'] ?? '' ) );
+		if ( '' !== $article_title ) {
+			return $article_title;
+		}
+
+		$video_title = sanitize_text_field( (string) ( $speech['title'] ?? '' ) );
+		$video_title = preg_replace( '/\s*:\s*Rede\s+von\s+.+$/iu', '', $video_title ) ?? $video_title;
+		return '' !== trim( $video_title )
+			? trim( $video_title )
+			: sprintf( __( 'Bundestagsrede %s', 'mdb-bundestag-speeches' ), $video_id );
+	}
+
+	private function assign_category( int $post_id ): ?WP_Error {
+		$term = term_exists( 'Bundestagsrede', 'category' );
+		if ( is_wp_error( $term ) ) {
+			return $term;
+		}
+		if ( ! $term ) {
+			$term = wp_insert_term(
+				__( 'Bundestagsrede', 'mdb-bundestag-speeches' ),
+				'category',
+				array( 'slug' => 'bundestagsrede' )
+			);
+			if ( is_wp_error( $term ) ) {
+				return $term;
+			}
+		}
+
+		$term_id = is_array( $term ) ? (int) ( $term['term_id'] ?? 0 ) : (int) $term;
+		if ( $term_id <= 0 ) {
+			return new WP_Error(
+				'mdb_speech_category',
+				__( 'Die Kategorie „Bundestagsrede“ konnte nicht angelegt werden.', 'mdb-bundestag-speeches' )
+			);
+		}
+
+		$result = wp_set_object_terms( $post_id, array( $term_id ), 'category', false );
+		return is_wp_error( $result ) ? $result : null;
 	}
 }

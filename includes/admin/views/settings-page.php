@@ -71,7 +71,6 @@ defined( 'ABSPATH' ) || exit;
 				<th scope="row"><label for="mdb-download-mode"><?php esc_html_e( 'Downloadmodus', 'mdb-bundestag-speeches' ); ?></label></th>
 				<td>
 					<select id="mdb-download-mode" name="mdb_speeches_settings[download_mode]">
-						<option value="embed_only" <?php selected( $settings['download_mode'], 'embed_only' ); ?>><?php esc_html_e( 'Nur Embed', 'mdb-bundestag-speeches' ); ?></option>
 						<option value="automatic" <?php selected( $settings['download_mode'], 'automatic' ); ?>><?php esc_html_e( 'Automatisch lokal speichern', 'mdb-bundestag-speeches' ); ?></option>
 						<option value="local" <?php selected( $settings['download_mode'], 'local' ); ?>><?php esc_html_e( 'Lokale Downloads manuell starten', 'mdb-bundestag-speeches' ); ?></option>
 					</select>
@@ -84,7 +83,7 @@ defined( 'ABSPATH' ) || exit;
 						<option value="1080p_8000" <?php selected( $settings['quality'], '1080p_8000' ); ?>>1080p / 8 Mbit/s</option>
 						<option value="360p_1000" <?php selected( $settings['quality'], '360p_1000' ); ?>>360p / 1 Mbit/s</option>
 					</select>
-					<p class="description"><?php esc_html_e( 'Nicht verfügbare Varianten werden als Downloadfehler protokolliert; der Embed bleibt erhalten.', 'mdb-bundestag-speeches' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Nicht verfügbare Varianten werden als Downloadfehler protokolliert.', 'mdb-bundestag-speeches' ); ?></p>
 				</td>
 			</tr>
 			<tr>

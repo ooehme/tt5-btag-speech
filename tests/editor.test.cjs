@@ -59,7 +59,6 @@ global.window = {
 	'assets/editor/blocks.js',
 	'assets/editor/query.js',
 	'assets/editor/query-controls.js',
-	'assets/editor/title-controls.js',
 	'assets/editor.js',
 ].forEach((file) => {
 	vm.runInThisContext(fs.readFileSync(path.join(root, file), 'utf8'), { filename: file });
@@ -67,25 +66,22 @@ global.window = {
 
 assert.equal(blocks.size, 4, 'all dynamic blocks are registered');
 assert.equal(typeof blocks.get('mdb/speech-video').edit, 'function');
-assert.equal(blocks.get('mdb/speech-video').attributes.source.default, 'auto');
+assert.equal(blocks.get('mdb/speech-video').attributes.source, undefined);
+assert.equal(blocks.get('mdb/speech-video').attributes.poster, undefined);
 
 const query = variations.find(({ block, settings }) => block === 'core/query' && settings.name === 'mdb/speeches');
 assert.ok(query, 'query variation is registered');
 assert.equal(query.settings.attributes.query.postType, 'mdb_speech');
 assert.equal(query.settings.attributes.query.orderBy, 'date');
 assert.equal(query.settings.innerBlocks[0][0], 'core/post-template');
-assert.equal(query.settings.innerBlocks[0][2][0][0], 'mdb/speech-video');
-assert.equal(query.settings.innerBlocks[0][2][0][1].useArticleImage, true);
-assert.ok(
-	query.settings.innerBlocks[0][2][1][1].className.includes(
-		'mdb-speech-title--remove-speaker'
-	)
-);
-assert.ok(
-	query.settings.innerBlocks[0][2][1][1].className.includes(
-		'mdb-speech-title--article-title'
-	)
-);
+assert.deepEqual(query.settings.innerBlocks[0][2][0], [
+	'mdb/speech-video',
+	{ display: 'click_to_load' },
+]);
+assert.deepEqual(query.settings.innerBlocks[0][2][1], [
+	'core/post-title',
+	{ isLink: true },
+]);
 assert.deepEqual(query.settings.allowedControls, ['search']);
 
 const controlsFilter = filters.get('mdb/speeches/query-controls');
@@ -124,58 +120,30 @@ assert.equal(attributeChanges[1].query.orderBy, 'title');
 assert.equal(attributeChanges[1].query.order, 'asc');
 assert.equal(attributeChanges[2].query.offset, 1);
 
-const titleControlsFilter = filters.get('mdb/speeches/title-controls');
-assert.equal(titleControlsFilter.hook, 'editor.BlockEdit');
-
-const titleAttributeChanges = [];
-const SpeechTitleEdit = titleControlsFilter.callback(noop);
-SpeechTitleEdit({
-	name: 'core/post-title',
-	attributes: query.settings.innerBlocks[0][2][1][1],
-	setAttributes: (changes) => titleAttributeChanges.push(changes),
-});
-
-const titleControl = elements.find(
-	(element) => element.type === ToggleControl && element.props.label === 'Redner aus Titel entfernen'
-);
-const articleTitleControl = elements.find(
-	(element) => element.type === ToggleControl && element.props.label === 'Artikeltitel verwenden'
-);
-assert.ok(titleControl, 'speaker-title toggle is attached to the title block');
-assert.ok(articleTitleControl, 'article-title toggle is attached to the title block');
-assert.equal(titleControl.props.checked, true);
-assert.equal(articleTitleControl.props.checked, true);
-
-titleControl.props.onChange(false);
-articleTitleControl.props.onChange(false);
-assert.ok(titleAttributeChanges[0].className.includes('mdb-speech-title--keep-speaker'));
-assert.ok(!titleAttributeChanges[0].className.includes('mdb-speech-title--remove-speaker'));
-assert.ok(titleAttributeChanges[1].className.includes('mdb-speech-title--source-title'));
-assert.ok(!titleAttributeChanges[1].className.includes('mdb-speech-title--article-title'));
-
-const videoAttributeChanges = [];
 blocks.get('mdb/speech-video').edit({
 	attributes: {
-		...query.settings.innerBlocks[0][2][0][1],
+		display: 'click_to_load',
 		controls: true,
 		autoplay: false,
 		muted: false,
-		poster: '',
 		aspectRatio: '16/9',
 	},
-	setAttributes: (changes) => videoAttributeChanges.push(changes),
+	setAttributes: noop,
 });
-const articleImageControl = elements.find(
-	(element) => element.type === ToggleControl && element.props.label === 'Artikelbild als Thumbnail'
+assert.ok(
+	!elements.some((element) => element.props.label === 'Quelle'),
+	'video source cannot be changed to an embed'
 );
-assert.ok(articleImageControl, 'article-image toggle is attached to the video block');
-assert.equal(articleImageControl.props.checked, true);
-articleImageControl.props.onChange(false);
-assert.equal(videoAttributeChanges[0].useArticleImage, false);
+assert.ok(
+	!elements.some((element) => element.props.label === 'Artikelbild als Thumbnail'),
+	'featured image is the fixed video poster source'
+);
 
-const videoVariations = variations.filter(({ block }) => block === 'mdb/speech-video');
-assert.equal(videoVariations.length, 3, 'all video variations are registered');
-assert.ok(!blocks.get('mdb/speech-video').usesContext.includes('mdb/useArticleImage'));
+assert.equal(
+	variations.filter(({ block }) => block === 'mdb/speech-video').length,
+	0,
+	'no embed video variation is registered'
+);
 
 global.document = { addEventListener: noop };
 vm.runInThisContext(fs.readFileSync(path.join(root, 'assets/view.js'), 'utf8'), {

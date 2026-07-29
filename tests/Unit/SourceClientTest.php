@@ -31,7 +31,6 @@ final class SourceClientTest extends TestCase {
 		self::assertSame( '7654763', $result['video_id'] );
 		self::assertSame( '86. Sitzung vom 25.06.2026, TOP 24: Rede von Steffen Janich', $result['title'] );
 		self::assertSame( 'https://www.bundestag.de/mediathek/video?videoid=7654763', $result['source_url'] );
-		self::assertSame( 'https://webtv.bundestag.de/pservices/player/embed/nokey?a=144277506&c=7654763', $result['embed_url'] );
 		self::assertStringContainsString( '/7654763/7654763_', $result['download_url'] );
 		self::assertSame( '25.06.2026', $result['date'] );
 		self::assertSame( '86. Sitzung', $result['session'] );

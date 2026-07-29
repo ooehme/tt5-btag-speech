@@ -23,8 +23,6 @@ Das Plugin trennt Quelle, Persistenz, Synchronisierung, Download und Ausgabe. Es
 - `CLI` stellt die drei WP-CLI-Kommandos bereit.
 - `Blocks` registriert Block-Metadaten und Assets.
 - `Speech_Video_Renderer` rendert Player und Click-to-load.
-- `Query_Display` überträgt alte Query-Optionen beim Rendern auf noch nicht konfigurierte Kindblöcke.
-- `Title_Display` ersetzt ausschließlich bei der Ausgabe Titel oder Redner-Suffixe.
 - `Block_Renderer` rendert die drei dynamischen Felder.
 - Editor-Blocktypen und Query-Variation liegen getrennt unter `assets/editor/`.
 - `Release_Updater` liest ausschließlich das neueste GitHub-Release und dessen benanntes ZIP-Asset.
@@ -37,18 +35,18 @@ Das Plugin trennt Quelle, Persistenz, Synchronisierung, Download und Ausgabe. Es
 4. Jede Videoseite wird separat abgerufen und geparst.
 5. Ein optionaler Artikel-Link wird aufgelöst; Artikeltitel und Open-Graph-Bild werden gecacht geparst.
 6. `_mdb_video_id` dient als idempotenter Schlüssel.
-7. Quelldaten werden aktualisiert; `post_title` wird nur beim ersten Import gesetzt.
-8. Im Modus `automatic` werden einzelne Download-Cronjobs geplant.
-9. Beim Videodownload wird ein vorhandenes Artikelbild einmalig in die Mediathek übernommen.
+7. Der Artikeltitel wird als `post_title` gesetzt; ersatzweise dient der bereinigte Videotitel.
+8. Der Videoblock wird bei leeren Beiträgen als Inhalt gesetzt und das Artikelbild als Beitragsbild importiert.
+9. Im Modus `automatic` werden einzelne lokale Download-Cronjobs geplant.
 10. Fehler einer Rede stoppen nicht die übrige Synchronisierung.
 11. Fehlende Reden werden nie gelöscht.
 
 ## Statusmodell
 
-- `embed_available`: Metadaten und Embed sind verfügbar.
+- `download_available`: Metadaten sind verfügbar; der lokale Download kann gestartet werden.
 - `download_pending`: lokaler Download ist eingeplant.
 - `downloaded`: ein verknüpftes Attachment existiert.
-- `download_failed`: Downloadfehler; Metadaten und Embed bleiben nutzbar.
+- `download_failed`: Downloadfehler; Metadaten und Originalquelle bleiben nutzbar.
 - `sync_error`: Detailseite konnte nicht synchronisiert werden.
 - `not_seen`: Eintrag fehlte in der letzten erfolgreich geparsten Liste.
 
@@ -65,7 +63,7 @@ Metadatenfehler und Downloadfehler bleiben getrennt. Eine erfolgreiche Metadaten
 - Artikelbilder sind auf Bundestag-Hosts, JPEG/PNG/WebP und 15 MB begrenzt.
 - Admin-Aktionen erfordern `manage_options` und eine aktionsspezifische Nonce.
 - Interne Fehler-, Download- und Statusmetadaten werden nicht öffentlich über REST exponiert.
-- Iframes erhalten eine Sandbox und werden im Click-to-load-Modus erst nach Interaktion erstellt.
+- Der Videoblock gibt ausschließlich lokal importierte MP4-Dateien aus.
 
 ## Parserdrift
 

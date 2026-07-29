@@ -43,8 +43,14 @@ final class SettingsTest extends TestCase {
 		self::assertSame( '12404', $result['speaker_id'] );
 		self::assertSame( '12404', $result['speaker_filter'] );
 		self::assertSame( 'twicedaily', $result['interval'] );
-		self::assertSame( 'embed_only', $result['download_mode'] );
+		self::assertSame( 'automatic', $result['download_mode'] );
 		self::assertSame( '1080p_8000', $result['quality'] );
 		self::assertSame( 2048, $result['max_file_size'] );
+	}
+
+	public function test_legacy_embed_mode_migrates_to_automatic_downloads(): void {
+		$GLOBALS['mdb_test_options'][ Settings::OPTION ] = array( 'download_mode' => 'embed_only' );
+
+		self::assertSame( 'automatic', ( new Settings() )->get( 'download_mode' ) );
 	}
 }

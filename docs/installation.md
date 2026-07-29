@@ -5,17 +5,16 @@
 1. Das Release-ZIP in WordPress hochladen und aktivieren.
 2. **Bundestagsreden → Synchronisierung** öffnen.
 3. Redner-ID und Redenlisten-Filter prüfen; `12404` sowie `21244 OR 12404` sind nur die Entwicklungsstandards für Steffen Janich.
-4. Intervall und Downloadmodus wählen.
+4. Intervall und lokalen Downloadmodus wählen.
 5. Bei lokalen Downloads Qualität und maximale Dateigröße passend zum Hosting festlegen.
 6. Eine manuelle Synchronisierung starten und die Statustabelle prüfen.
 
 ## Downloadmodi
 
-- `embed_only`: kein lokaler Download; Ausgabe über Bundestag-Embed.
 - `automatic`: neue Reden werden nach dem Metadatenlauf per separatem Cronjob lokal importiert.
-- `local`: lokale Speicherung ist vorgesehen, Downloads werden aber bewusst über Backend oder CLI gestartet.
+- `local`: Downloads werden bewusst über Backend oder CLI gestartet.
 
-Bei jedem Downloadfehler bleibt der Embed verfügbar. Fehlgeschlagene Downloads können gesammelt neu eingeplant werden.
+Fehlgeschlagene Downloads können gesammelt neu eingeplant werden.
 
 ## Cron
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.0 – 2026-07-29
+
+- Bundestag-Embeds und alle zugehörigen Darstellungsoptionen entfernt
+- Artikeltitel als echter Beitragstitel mit bereinigtem Videotitel als Fallback
+- lokaler Videoblock als Inhalt jedes synchronisierten Beitrags
+- Artikelbild als echtes, manuell änderbares Beitragsbild und Video-Poster
+- Beitragsdatum aus dem `date`-Metatag der Bundestag-Videoseite
+- automatische Kategorie „Bundestagsrede“ für jeden Videobeitrag
+
 ## 1.1.3 – 2026-07-29
 
 - tatsächliches Rededatum wird bei jeder Synchronisierung als Beitragsdatum übernommen

@@ -16,10 +16,6 @@ final class URLResolverTest extends TestCase {
 			$resolver->video_url( '7654763' )
 		);
 		self::assertSame(
-			'https://webtv.bundestag.de/pservices/player/embed/nokey?a=144277506&c=7654763',
-			$resolver->embed_url( '7654763' )
-		);
-		self::assertSame(
 			'https://cldf-od.r53.cdn.tv1.eu/1000153copo/ondemand/app144277506/145293313/7654763/7654763_h264_1920_1080_8000kb_baseline_de_8000.mp4?fdl=1',
 			$resolver->download_url( '7654763' )
 		);

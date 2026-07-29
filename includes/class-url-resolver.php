@@ -9,7 +9,6 @@ use InvalidArgumentException;
 final class URL_Resolver {
 	private const LIST_BASE = 'https://www.bundestag.de/ajax/filterlist/de/mediathek/536668-536668';
 	private const VIDEO_BASE = 'https://www.bundestag.de/mediathek/video';
-	private const EMBED_BASE = 'https://webtv.bundestag.de/pservices/player/embed/nokey';
 	private const CDN_BASE = 'https://cldf-od.r53.cdn.tv1.eu/1000153copo/ondemand/app144277506/145293313';
 
 	/**
@@ -47,10 +46,6 @@ final class URL_Resolver {
 
 	public function video_url( string $video_id ): string {
 		return self::VIDEO_BASE . '?videoid=' . rawurlencode( $this->numeric_id( $video_id, 'video' ) );
-	}
-
-	public function embed_url( string $video_id ): string {
-		return self::EMBED_BASE . '?a=144277506&c=' . rawurlencode( $this->numeric_id( $video_id, 'video' ) );
 	}
 
 	public function download_url( string $video_id, string $quality = '1080p_8000' ): string {
@@ -94,7 +89,6 @@ final class URL_Resolver {
 			array(
 				'www.bundestag.de',
 				'bundestag.de',
-				'webtv.bundestag.de',
 				'cldf-od.r53.cdn.tv1.eu',
 			),
 			true
