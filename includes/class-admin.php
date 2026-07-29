@@ -14,7 +14,8 @@ final class Admin {
 		private Synchronizer $synchronizer,
 		private Download_Service $downloads,
 		private Speech_Repository $repository,
-		private Wipe_Service $wipe_service
+		private Wipe_Service $wipe_service,
+		private Speaker_Catalog $speaker_catalog
 	) {}
 
 	public function register(): void {
@@ -58,6 +59,7 @@ final class Admin {
 		$last_sync   = get_option( 'mdb_speeches_last_sync', array() );
 		$wipe_paused = (bool) get_option( Wipe_Service::PAUSE_OPTION, false );
 		$notice      = get_transient( $this->notice_key() );
+		$speakers    = $this->speaker_catalog->all();
 		delete_transient( $this->notice_key() );
 
 		require MDB_SPEECHES_DIR . 'includes/admin/views/settings-page.php';

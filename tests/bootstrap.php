@@ -5,10 +5,13 @@ declare(strict_types=1);
 require_once __DIR__ . '/phpunit-shim.php';
 
 define( 'ABSPATH', dirname( __DIR__ ) . DIRECTORY_SEPARATOR );
-define( 'MDB_SPEECHES_VERSION', '2.0.5' );
+define( 'MDB_SPEECHES_VERSION', '2.0.6' );
 define( 'MDB_SPEECHES_DIR', dirname( __DIR__ ) . DIRECTORY_SEPARATOR );
 define( 'MDB_SPEECHES_URL', 'https://example.test/wp-content/plugins/mdb-bundestag-speeches/' );
 define( 'MDB_SPEECHES_FILE', MDB_SPEECHES_DIR . 'mdb-bundestag-speeches.php' );
+define( 'MINUTE_IN_SECONDS', 60 );
+define( 'HOUR_IN_SECONDS', 3600 );
+define( 'WEEK_IN_SECONDS', 604800 );
 
 spl_autoload_register(
 	static function ( string $class ): void {
@@ -79,6 +82,8 @@ $GLOBALS['mdb_test_terms']          = array();
 $GLOBALS['mdb_test_taxonomy_terms'] = array();
 $GLOBALS['mdb_test_options']        = array();
 $GLOBALS['mdb_http_head']           = null;
+$GLOBALS['mdb_http_head_queue']     = array();
+$GLOBALS['mdb_http_head_urls']      = array();
 $GLOBALS['mdb_http_get']            = null;
 $GLOBALS['mdb_http_get_queue']      = array();
 $GLOBALS['mdb_test_get_posts_queue'] = array();
@@ -154,6 +159,13 @@ function delete_post_meta( int $post_id, string $key ): void {
 	unset( $GLOBALS['mdb_test_meta'][ $post_id ][ $key ] );
 }
 function update_option( string $option, mixed $value, bool|null $autoload = null ): bool {
+	$GLOBALS['mdb_test_options'][ $option ] = $value;
+	return true;
+}
+function add_option( string $option, mixed $value = '', string $deprecated = '', bool|string $autoload = true ): bool {
+	if ( array_key_exists( $option, $GLOBALS['mdb_test_options'] ) ) {
+		return false;
+	}
 	$GLOBALS['mdb_test_options'][ $option ] = $value;
 	return true;
 }
@@ -266,10 +278,17 @@ function plugin_basename( string $file ): string {
 function home_url( string $path = '' ): string {
 	return 'https://example.test' . $path;
 }
+function wp_generate_uuid4(): string {
+	return '12345678-1234-4123-8123-123456789abc';
+}
 function is_wp_error( mixed $value ): bool {
 	return $value instanceof WP_Error;
 }
 function wp_safe_remote_head( string $url, array $args = array() ): mixed {
+	$GLOBALS['mdb_http_head_urls'][] = $url;
+	if ( ! empty( $GLOBALS['mdb_http_head_queue'] ) ) {
+		return array_shift( $GLOBALS['mdb_http_head_queue'] );
+	}
 	return $GLOBALS['mdb_http_head'];
 }
 function wp_safe_remote_get( string $url, array $args = array() ): mixed {
@@ -299,6 +318,15 @@ function wp_tempnam( string $filename = '' ): string|false {
 function wp_delete_file( string $file ): bool {
 	return ! is_file( $file ) || unlink( $file );
 }
+function download_url( string $url, int $timeout = 300, bool $signature_verification = false ): string|WP_Error {
+	$GLOBALS['mdb_last_download_url'] = $url;
+	$file = tempnam( sys_get_temp_dir(), 'mdb-video-' );
+	if ( false === $file ) {
+		return new WP_Error( 'temp', 'No temporary file.' );
+	}
+	file_put_contents( $file, (string) ( $GLOBALS['mdb_download_body'] ?? 'mp4' ) );
+	return $file;
+}
 function sanitize_file_name( string $filename ): string {
 	return preg_replace( '/[^A-Za-z0-9._-]/', '-', basename( $filename ) ) ?? '';
 }
@@ -314,6 +342,10 @@ function wp_check_filetype_and_ext( string $file, string $filename, array $mimes
 	return array( 'ext' => $extension ?: false, 'type' => $type, 'proper_filename' => false );
 }
 function media_handle_sideload( array $file, int $post_id, string $description = '' ): int|WP_Error {
+	$GLOBALS['mdb_last_sideload_name'] = (string) ( $file['name'] ?? '' );
+	$GLOBALS['mdb_last_sideload_body'] = is_file( (string) ( $file['tmp_name'] ?? '' ) )
+		? (string) file_get_contents( (string) $file['tmp_name'] )
+		: '';
 	if ( is_file( (string) ( $file['tmp_name'] ?? '' ) ) ) {
 		unlink( (string) $file['tmp_name'] );
 	}

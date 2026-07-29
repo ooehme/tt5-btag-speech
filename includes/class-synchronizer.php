@@ -77,7 +77,11 @@ final class Synchronizer {
 					++$summary['created'];
 				}
 
-				if ( 'automatic' === $mode && Sync_Status::DOWNLOAD_PENDING === get_post_meta( $result, '_mdb_sync_status', true ) ) {
+				$status = (string) get_post_meta( $result, '_mdb_sync_status', true );
+				$subtitle_backfill = Sync_Status::DOWNLOADED === $status
+					&& (int) get_post_meta( $result, '_mdb_subtitle_attachment_id', true ) <= 0
+					&& '' === (string) get_post_meta( $result, '_mdb_subtitle_checked_at', true );
+				if ( 'automatic' === $mode && ( Sync_Status::DOWNLOAD_PENDING === $status || $subtitle_backfill ) ) {
 					$this->queue_download( $result );
 					++$summary['queued'];
 				}

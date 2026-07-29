@@ -8,6 +8,8 @@ Produktionsfähiges WordPress-Plugin zum Synchronisieren und Darstellen von Rede
 - idempotenter Import als öffentlicher Custom Post Type `mdb_speech`
 - Artikeltitel als echter Beitragstitel mit bereinigtem Videotitel als Fallback
 - automatischer oder manuell gestarteter lokaler Download
+- automatische MP4-Fallbacks zwischen den 1080p-Varianten mit 8 und 5 Mbit/s
+- lokale deutsche Untertitel aus der Bundestag-SRT-Datei als WebVTT-Track
 - gestreamter MP4-Import mit Host-, Status-, MIME- und Größenprüfung
 - `HEAD`-Prüfung mit begrenztem `Range: bytes=0-0`-Fallback
 - WP-Cron, Synchronisations- und Download-Locks sowie WP-CLI

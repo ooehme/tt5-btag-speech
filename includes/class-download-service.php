@@ -10,7 +10,10 @@ final class Download_Service {
 	public function __construct(
 		private MP4_Validator $validator,
 		private Speech_Repository $repository,
-		private Download_Lock $lock
+		private Download_Lock $lock,
+		private Settings $settings,
+		private URL_Resolver $urls,
+		private Subtitle_Service $subtitles
 	) {}
 
 	/**
@@ -37,16 +40,19 @@ final class Download_Service {
 	 * @return int|WP_Error Attachment ID or error.
 	 */
 	private function download_unlocked( int $post_id ): int|WP_Error {
+		$video_id = (string) get_post_meta( $post_id, '_mdb_video_id', true );
 		$attachment_id = (int) get_post_meta( $post_id, '_mdb_attachment_id', true );
 		if ( $attachment_id > 0 && 'attachment' === get_post_type( $attachment_id ) ) {
+			$this->download_subtitle( $post_id, $video_id );
+			update_post_meta( $post_id, '_mdb_sync_status', Sync_Status::DOWNLOADED );
 			return $attachment_id;
 		}
 
-		$url = (string) get_post_meta( $post_id, '_mdb_download_url', true );
-		$validated = $this->validator->validate( $url );
-		if ( is_wp_error( $validated ) ) {
-			return $this->failure( $post_id, $validated );
+		$resolved = $this->resolve_download( $post_id, $video_id );
+		if ( is_wp_error( $resolved ) ) {
+			return $this->failure( $post_id, $resolved );
 		}
+		$url = $resolved['url'];
 
 		$this->load_media_dependencies();
 		$tmp = download_url( $url, 300 );
@@ -61,7 +67,6 @@ final class Download_Service {
 			return $this->failure( $post_id, new WP_Error( 'mdb_download_size', __( 'Die heruntergeladene Datei ist leer oder überschreitet das Größenlimit.', 'mdb-bundestag-speeches' ) ) );
 		}
 
-		$video_id = (string) get_post_meta( $post_id, '_mdb_video_id', true );
 		$filename = sanitize_file_name( 'bundestagsrede-' . $video_id . '.mp4' );
 		$checked  = wp_check_filetype_and_ext( $tmp, $filename, array( 'mp4' => 'video/mp4' ) );
 		if ( 'video/mp4' !== (string) ( $checked['type'] ?? '' ) ) {
@@ -85,7 +90,50 @@ final class Download_Service {
 		update_post_meta( $post_id, '_mdb_attachment_id', $attachment_id );
 		update_post_meta( $post_id, '_mdb_sync_status', Sync_Status::DOWNLOADED );
 		delete_post_meta( $post_id, '_mdb_last_error' );
+		$this->download_subtitle( $post_id, $video_id );
 		return $attachment_id;
+	}
+
+	/**
+	 * @return array{url:string,size:int,mime:string}|WP_Error
+	 */
+	private function resolve_download( int $post_id, string $video_id ): array|WP_Error {
+		$stored_url = (string) get_post_meta( $post_id, '_mdb_download_url', true );
+		try {
+			$candidates = $this->urls->download_urls( $video_id, (string) $this->settings->get( 'quality' ) );
+		} catch ( \InvalidArgumentException $exception ) {
+			return new WP_Error( 'mdb_invalid_quality', __( 'Die konfigurierte Videoqualität ist ungültig.', 'mdb-bundestag-speeches' ) );
+		}
+
+		if ( '' !== $stored_url ) {
+			$candidates[] = $stored_url;
+		}
+		$candidates = array_values( array_unique( $candidates ) );
+		$last_error = new WP_Error( 'mdb_mp4_missing', __( 'Für dieses Video wurde keine erreichbare MP4-Variante gefunden.', 'mdb-bundestag-speeches' ) );
+
+		foreach ( $candidates as $url ) {
+			$validated = $this->validator->validate( $url );
+			if ( is_wp_error( $validated ) ) {
+				$last_error = $validated;
+				continue;
+			}
+
+			update_post_meta( $post_id, '_mdb_download_url', $url );
+			return array(
+				'url'  => $url,
+				'size' => $validated['size'],
+				'mime' => $validated['mime'],
+			);
+		}
+
+		return $last_error;
+	}
+
+	private function download_subtitle( int $post_id, string $video_id ): void {
+		$result = $this->subtitles->download( $post_id, $video_id );
+		if ( is_wp_error( $result ) ) {
+			error_log( 'MDB Bundestagsreden (Untertitel ' . $post_id . '): ' . $result->get_error_message() );
+		}
 	}
 
 	/**
@@ -104,6 +152,7 @@ final class Download_Service {
 				Sync_Status::DOWNLOAD_AVAILABLE,
 				Sync_Status::DOWNLOAD_PENDING,
 				Sync_Status::DOWNLOAD_FAILED,
+				Sync_Status::DOWNLOADED,
 			)
 		);
 	}

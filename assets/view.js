@@ -17,6 +17,15 @@
 		if (button.dataset.mdbPoster) {
 			player.poster = button.dataset.mdbPoster;
 		}
+		if (button.dataset.mdbSubtitle) {
+			const track = document.createElement('track');
+			track.kind = 'subtitles';
+			track.src = button.dataset.mdbSubtitle;
+			track.srclang = 'de';
+			track.label = 'Deutsch';
+			track.default = true;
+			player.appendChild(track);
+		}
 
 		player.src = source;
 		button.replaceWith(player);

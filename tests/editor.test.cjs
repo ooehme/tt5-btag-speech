@@ -215,7 +215,10 @@ assert.equal(
 );
 
 global.document = { addEventListener: noop };
-vm.runInThisContext(fs.readFileSync(path.join(root, 'assets/view.js'), 'utf8'), {
+const viewScript = fs.readFileSync(path.join(root, 'assets/view.js'), 'utf8');
+assert.ok(viewScript.includes("document.createElement('track')"), 'lazy player creates a subtitle track');
+assert.ok(viewScript.includes('button.dataset.mdbSubtitle'), 'lazy player reads the local subtitle URL');
+vm.runInThisContext(viewScript, {
 	filename: 'assets/view.js',
 });
 

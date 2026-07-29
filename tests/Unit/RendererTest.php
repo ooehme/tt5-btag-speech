@@ -17,11 +17,13 @@ final class RendererTest extends TestCase {
 				'_mdb_topic'             => 'TOP 24',
 				'_mdb_session'           => '86. Sitzung',
 				'_mdb_attachment_id'     => 90,
+				'_mdb_subtitle_attachment_id' => 92,
 				'_mdb_article_image_url' => 'https://www.bundestag.de/resource/image/1184450/article.jpg',
 			),
 		);
 		$GLOBALS['mdb_test_attachments'][90] = 'https://example.test/uploads/rede.mp4';
 		$GLOBALS['mdb_test_attachments'][91] = 'https://example.test/uploads/article.jpg';
+		$GLOBALS['mdb_test_attachments'][92] = 'https://example.test/uploads/rede.vtt';
 		$GLOBALS['mdb_test_thumbnails'][17]  = 91;
 		$GLOBALS['mdb_test_titles'][17]      = 'Cybersicherheit beraten';
 	}
@@ -35,6 +37,7 @@ final class RendererTest extends TestCase {
 		);
 
 		self::assertStringContainsString( 'data-mdb-src="https://example.test/uploads/rede.mp4"', $html );
+		self::assertStringContainsString( 'data-mdb-subtitle="https://example.test/uploads/rede.vtt"', $html );
 		self::assertStringContainsString( 'uploads/article.jpg', $html );
 		self::assertStringContainsString(
 			'style="aspect-ratio:16/9;--mdb-speech-aspect-ratio:16/9;overflow:hidden;position:relative;width:100%"',
@@ -53,6 +56,7 @@ final class RendererTest extends TestCase {
 		);
 
 		self::assertStringContainsString( '<video', $html );
+		self::assertStringContainsString( '<track kind="subtitles" srclang="de" label="Deutsch" src="https://example.test/uploads/rede.vtt" default>', $html );
 		self::assertStringContainsString( 'poster="https://example.test/uploads/article.jpg"', $html );
 		self::assertStringContainsString(
 			'style="aspect-ratio:16/9;--mdb-speech-aspect-ratio:16/9;overflow:hidden;position:relative;width:100%"',

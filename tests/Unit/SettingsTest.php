@@ -19,13 +19,13 @@ final class SettingsTest extends TestCase {
 				'speaker_filter' => '88888 or 99999',
 				'interval'       => 'daily',
 				'download_mode'  => 'local',
-				'quality'        => '360p_1000',
+				'quality'        => '1080p_5000',
 				'max_file_size'  => '42',
 			)
 		);
 		self::assertSame( '99999', $result['speaker_id'] );
 		self::assertSame( '88888 OR 99999', $result['speaker_filter'] );
-		self::assertSame( '360p_1000', $result['quality'] );
+		self::assertSame( '1080p_5000', $result['quality'] );
 		self::assertSame( 42, $result['max_file_size'] );
 	}
 

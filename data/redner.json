@@ -1,0 +1,598 @@
+[
+  {
+    "name": "Alexander Arpaschi",
+    "rednerId": "21015"
+  },
+  {
+    "name": "Carolin Bachmann",
+    "rednerId": "12159"
+  },
+  {
+    "name": "Adam Balten",
+    "rednerId": "21026"
+  },
+  {
+    "name": "Dr. Christina Baum",
+    "rednerId": "12174"
+  },
+  {
+    "name": "Dr. Bernd Baumann",
+    "rednerId": "12175"
+  },
+  {
+    "name": "Carsten Becker",
+    "rednerId": "21039"
+  },
+  {
+    "name": "Marc Bernhard",
+    "rednerId": "12185"
+  },
+  {
+    "name": "Birgit Bessin",
+    "rednerId": "21046"
+  },
+  {
+    "name": "Dr. Christoph Birghan",
+    "rednerId": "21053"
+  },
+  {
+    "name": "Andreas Bleck",
+    "rednerId": "12191"
+  },
+  {
+    "name": "Joachim Bloch",
+    "rednerId": "21056"
+  },
+  {
+    "name": "Dr. Michael Blos",
+    "rednerId": "21057"
+  },
+  {
+    "name": "René Bochmann",
+    "rednerId": "12192"
+  },
+  {
+    "name": "Peter Boehringer",
+    "rednerId": "9055"
+  },
+  {
+    "name": "Peter Bohnhof",
+    "rednerId": "21062"
+  },
+  {
+    "name": "Gereon Bollmann",
+    "rednerId": "12196"
+  },
+  {
+    "name": "Torben Braga",
+    "rednerId": "21070"
+  },
+  {
+    "name": "Dirk Brandes",
+    "rednerId": "12201"
+  },
+  {
+    "name": "Stephan Brandner",
+    "rednerId": "12203"
+  },
+  {
+    "name": "Erhard Brucker",
+    "rednerId": "21083"
+  },
+  {
+    "name": "Marcus Bühl",
+    "rednerId": "12219"
+  },
+  {
+    "name": "Tino Chrupalla",
+    "rednerId": "12227"
+  },
+  {
+    "name": "Dr. Gottfried Curio",
+    "rednerId": "9092"
+  },
+  {
+    "name": "Thomas Dietz",
+    "rednerId": "12244"
+  },
+  {
+    "name": "Christian Douglas",
+    "rednerId": "21113"
+  },
+  {
+    "name": "Christopher Drößler",
+    "rednerId": "21115"
+  },
+  {
+    "name": "Tobias Ebenberger",
+    "rednerId": "21121"
+  },
+  {
+    "name": "Dr. Michael Espendiller",
+    "rednerId": "12271"
+  },
+  {
+    "name": "Micha Fehre",
+    "rednerId": "21142"
+  },
+  {
+    "name": "Peter Felser",
+    "rednerId": "12279"
+  },
+  {
+    "name": "Jan Feser",
+    "rednerId": "21145"
+  },
+  {
+    "name": "Thomas Fetsch",
+    "rednerId": "21146"
+  },
+  {
+    "name": "Hauke Finger",
+    "rednerId": "21149"
+  },
+  {
+    "name": "Dr. Götz Frömming",
+    "rednerId": "9145"
+  },
+  {
+    "name": "Markus Frohnmaier",
+    "rednerId": "12291"
+  },
+  {
+    "name": "Rainer Galla",
+    "rednerId": "21157"
+  },
+  {
+    "name": "Dr. Alexander Gauland",
+    "rednerId": "9151"
+  },
+  {
+    "name": "Alexis L. Giersch",
+    "rednerId": "21641"
+  },
+  {
+    "name": "Ronald Gläser",
+    "rednerId": "21170"
+  },
+  {
+    "name": "Hannes Gnauck",
+    "rednerId": "12312"
+  },
+  {
+    "name": "Hans-Jürgen Goßner",
+    "rednerId": "21176"
+  },
+  {
+    "name": "Kay Gottschalk",
+    "rednerId": "12316"
+  },
+  {
+    "name": "Christoph Grimm",
+    "rednerId": "21184"
+  },
+  {
+    "name": "Rainer Groß",
+    "rednerId": "21185"
+  },
+  {
+    "name": "Prof. Dr. Ingo Hahn",
+    "rednerId": "21196"
+  },
+  {
+    "name": "Lars Haise",
+    "rednerId": "21199"
+  },
+  {
+    "name": "Mirco Hanker",
+    "rednerId": "21201"
+  },
+  {
+    "name": "Jochen Haug",
+    "rednerId": "21206"
+  },
+  {
+    "name": "Matthias Helferich",
+    "rednerId": "12361"
+  },
+  {
+    "name": "Udo Theodor Hemmelgarn",
+    "rednerId": "9217"
+  },
+  {
+    "name": "Stefan Henze",
+    "rednerId": "21216"
+  },
+  {
+    "name": "Martin Hess",
+    "rednerId": "9227"
+  },
+  {
+    "name": "Nicole Hess",
+    "rednerId": "21221"
+  },
+  {
+    "name": "Olaf Hilmer",
+    "rednerId": "21227"
+  },
+  {
+    "name": "Karsten Hilse",
+    "rednerId": "12378"
+  },
+  {
+    "name": "Nicole Höchst",
+    "rednerId": "9236"
+  },
+  {
+    "name": "Leif-Erik Holm",
+    "rednerId": "9247"
+  },
+  {
+    "name": "Gerrit Huy",
+    "rednerId": "12399"
+  },
+  {
+    "name": "Fabian Jacobi",
+    "rednerId": "12402"
+  },
+  {
+    "name": "Steffen Janich",
+    "rednerId": "12404"
+  },
+  {
+    "name": "Robin Jünger",
+    "rednerId": "21251"
+  },
+  {
+    "name": "Dr. Malte Kaufmann",
+    "rednerId": "12425"
+  },
+  {
+    "name": "Prof. Dr.-Ing. habil. Michael Kaufmann",
+    "rednerId": "12424"
+  },
+  {
+    "name": "Martina Kempf",
+    "rednerId": "21264"
+  },
+  {
+    "name": "Stefan Keuter",
+    "rednerId": "9288"
+  },
+  {
+    "name": "Rocco Kever",
+    "rednerId": "21267"
+  },
+  {
+    "name": "Kurt Kleinschmidt",
+    "rednerId": "21274"
+  },
+  {
+    "name": "Maximilian Kneller",
+    "rednerId": "21279"
+  },
+  {
+    "name": "Heinrich Koch",
+    "rednerId": "21283"
+  },
+  {
+    "name": "Jürgen Koegel",
+    "rednerId": "21284"
+  },
+  {
+    "name": "Achim Köhler",
+    "rednerId": "21286"
+  },
+  {
+    "name": "Jörn König",
+    "rednerId": "12458"
+  },
+  {
+    "name": "Enrico Komning",
+    "rednerId": "9310"
+  },
+  {
+    "name": "Thomas Korell",
+    "rednerId": "21297"
+  },
+  {
+    "name": "Steffen Kotré",
+    "rednerId": "9317"
+  },
+  {
+    "name": "Dr. Rainer Kraft",
+    "rednerId": "12467"
+  },
+  {
+    "name": "Dr. Maximilian Krah",
+    "rednerId": "21302"
+  },
+  {
+    "name": "Manuel Krauthausen",
+    "rednerId": "21304"
+  },
+  {
+    "name": "Thomas Ladzinski",
+    "rednerId": "21311"
+  },
+  {
+    "name": "Pierre Lamely",
+    "rednerId": "21312"
+  },
+  {
+    "name": "Sascha Lensing",
+    "rednerId": "21325"
+  },
+  {
+    "name": "Rüdiger Lucassen",
+    "rednerId": "9371"
+  },
+  {
+    "name": "Sebastian Maack",
+    "rednerId": "21341"
+  },
+  {
+    "name": "Johann Martel",
+    "rednerId": "21346"
+  },
+  {
+    "name": "Markus Matzerath",
+    "rednerId": "21350"
+  },
+  {
+    "name": "Andreas Mayer",
+    "rednerId": "21352"
+  },
+  {
+    "name": "Danny Meiners",
+    "rednerId": "21356"
+  },
+  {
+    "name": "Knuth Meyer-Soltau",
+    "rednerId": "21362"
+  },
+  {
+    "name": "Sergej Minich",
+    "rednerId": "21370"
+  },
+  {
+    "name": "Reinhard Mixl",
+    "rednerId": "21372"
+  },
+  {
+    "name": "Stefan Möller",
+    "rednerId": "21375"
+  },
+  {
+    "name": "Matthias Moosdorf",
+    "rednerId": "12576"
+  },
+  {
+    "name": "Sebastian Münzenmaier",
+    "rednerId": "9437"
+  },
+  {
+    "name": "Edgar Naujok",
+    "rednerId": "12599"
+  },
+  {
+    "name": "Iris Nieland",
+    "rednerId": "21392"
+  },
+  {
+    "name": "Jan Ralf Nolte",
+    "rednerId": "9450"
+  },
+  {
+    "name": "Gerold Otten",
+    "rednerId": "9463"
+  },
+  {
+    "name": "Andreas Paul",
+    "rednerId": "21410"
+  },
+  {
+    "name": "Denis Pauli",
+    "rednerId": "21411"
+  },
+  {
+    "name": "Tobias Matthias Peterka",
+    "rednerId": "12631"
+  },
+  {
+    "name": "Stephan Protschka",
+    "rednerId": "12643"
+  },
+  {
+    "name": "Kerstin Przygodda",
+    "rednerId": "21429"
+  },
+  {
+    "name": "Marcel Queckemeyer",
+    "rednerId": "21430"
+  },
+  {
+    "name": "Dr. Anna Rathert",
+    "rednerId": "21437"
+  },
+  {
+    "name": "Arne Raue",
+    "rednerId": "21438"
+  },
+  {
+    "name": "Christian Reck",
+    "rednerId": "21439"
+  },
+  {
+    "name": "Lukas Rehm",
+    "rednerId": "21442"
+  },
+  {
+    "name": "Martin Reichardt",
+    "rednerId": "9499"
+  },
+  {
+    "name": "Martin Erwin Renner",
+    "rednerId": "9503"
+  },
+  {
+    "name": "Matthias Rentzsch",
+    "rednerId": "21450"
+  },
+  {
+    "name": "Dr. Rainer Rothfuß",
+    "rednerId": "21458"
+  },
+  {
+    "name": "Angela Rudzka",
+    "rednerId": "21464"
+  },
+  {
+    "name": "Ruben Rupp",
+    "rednerId": "21467"
+  },
+  {
+    "name": "Bernd Schattner",
+    "rednerId": "12696"
+  },
+  {
+    "name": "Raimond Scheirich",
+    "rednerId": "21480"
+  },
+  {
+    "name": "Volker Scheurell",
+    "rednerId": "21482"
+  },
+  {
+    "name": "Ulrike Schielke-Ziesing",
+    "rednerId": "12705"
+  },
+  {
+    "name": "Lars Schieske",
+    "rednerId": "21484"
+  },
+  {
+    "name": "Carina Schießl",
+    "rednerId": "21485"
+  },
+  {
+    "name": "Manfred Schiller",
+    "rednerId": "21486"
+  },
+  {
+    "name": "Julian Schmidt",
+    "rednerId": "21494"
+  },
+  {
+    "name": "Dr. Paul Schmidt",
+    "rednerId": "21490"
+  },
+  {
+    "name": "Stefan Schröder",
+    "rednerId": "21507"
+  },
+  {
+    "name": "Georg Schroeter",
+    "rednerId": "21509"
+  },
+  {
+    "name": "Bernd Schuhmann",
+    "rednerId": "21510"
+  },
+  {
+    "name": "Uwe Schulz",
+    "rednerId": "9570"
+  },
+  {
+    "name": "Dario Seifert",
+    "rednerId": "21521"
+  },
+  {
+    "name": "Martin Sichert",
+    "rednerId": "12745"
+  },
+  {
+    "name": "René Springer",
+    "rednerId": "9601"
+  },
+  {
+    "name": "Thomas Stephan",
+    "rednerId": "21542"
+  },
+  {
+    "name": "Beatrix von Storch",
+    "rednerId": "12775"
+  },
+  {
+    "name": "Otto Strauß",
+    "rednerId": "21547"
+  },
+  {
+    "name": "Tobias Teich",
+    "rednerId": "21554"
+  },
+  {
+    "name": "Robert Teske",
+    "rednerId": "21556"
+  },
+  {
+    "name": "Bastian Treuheit",
+    "rednerId": "21566"
+  },
+  {
+    "name": "Martina Uhr",
+    "rednerId": "21570"
+  },
+  {
+    "name": "Dr. Alice Weidel",
+    "rednerId": "9674"
+  },
+  {
+    "name": "Mathias Weiser",
+    "rednerId": "21595"
+  },
+  {
+    "name": "Claudia Weiss",
+    "rednerId": "21598"
+  },
+  {
+    "name": "Sven Wendorf",
+    "rednerId": "21599"
+  },
+  {
+    "name": "Wolfgang Wiehle",
+    "rednerId": "12845"
+  },
+  {
+    "name": "Dr. Christian Wirth",
+    "rednerId": "9695"
+  },
+  {
+    "name": "Dr. Alexander Wolf",
+    "rednerId": "21614"
+  },
+  {
+    "name": "Christian Zaum",
+    "rednerId": "21617"
+  },
+  {
+    "name": "Prof. Dr. Daniel Zerbin",
+    "rednerId": "21618"
+  },
+  {
+    "name": "Kay-Uwe Ziegler",
+    "rednerId": "12862"
+  },
+  {
+    "name": "Diana Zimmer",
+    "rednerId": "21624"
+  },
+  {
+    "name": "Jörg Zirwes",
+    "rednerId": "21626"
+  },
+  {
+    "name": "Ulrich von Zons",
+    "rednerId": "21628"
+  }
+]

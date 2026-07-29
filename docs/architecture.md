@@ -15,7 +15,8 @@ Das Plugin trennt Quelle, Persistenz, Synchronisierung, Download und Ausgabe. Es
 - `Synchronizer` koordiniert Liste, Detailseiten und Upserts.
 - `Sync_Lock` verhindert parallele Metadatenläufe.
 - `MP4_Validator` prüft Host, HTTP-Status, MIME-Type und Größe.
-- `Download_Service` streamt mit WordPress-Funktionen in die Mediathek.
+- `Download_Service` prüft hochwertige MP4-Fallbacks und streamt mit WordPress-Funktionen in die Mediathek.
+- `Subtitle_Service` lädt SRT-Untertitel, konvertiert sie in WebVTT und legt sie als verknüpfte Medien ab.
 - `Legacy_Article_Image_Cleanup` entfernt einmalig alte Medien mit der eindeutigen Artikelbild-Importmarkierung.
 - `Download_Lock` verhindert doppelte Attachments bei parallelen Jobs.
 - `Wipe_Service` entfernt ausschließlich Plugin-Beiträge, zugehörige Medien und Legacy-Zustände.
@@ -38,7 +39,7 @@ Das Plugin trennt Quelle, Persistenz, Synchronisierung, Download und Ausgabe. Es
 6. `_mdb_video_id` dient als idempotenter Schlüssel.
 7. Der Artikeltitel wird als `post_title` gesetzt; ersatzweise dient der bereinigte Videotitel.
 8. Der Videoblock wird bei leeren Beiträgen als Inhalt gesetzt; sein Poster nutzt vorrangig ein redaktionelles Beitragsbild und sonst die externe Artikelbild-URL.
-9. Im Modus `automatic` werden einzelne lokale Download-Cronjobs geplant.
+9. Im Modus `automatic` werden einzelne lokale Download-Cronjobs geplant; bestehende Videos ohne geprüften Untertitel werden einmalig nachgezogen.
 10. Fehler einer Rede stoppen nicht die übrige Synchronisierung.
 11. Fehlende Reden werden nie gelöscht.
 
@@ -59,13 +60,15 @@ Metadatenfehler und Downloadfehler bleiben getrennt. Eine erfolgreiche Metadaten
 - Quell- und Download-URLs müssen HTTPS, Port 443 und einen exakt erlaubten Host verwenden.
 - HTML-Antworten sind auf 5 MB begrenzt.
 - MP4-Validierung folgt keinen Redirects und akzeptiert ausschließlich `video/mp4`.
+- MP4-Fallbacks bleiben auf die konfigurierten hochwertigen 1080p-Profile beschränkt.
+- Untertitelantworten sind auf 2 MB begrenzt und müssen gültige SRT-Zeitmarken enthalten.
 - Der GET-Fallback überträgt mit `Range: bytes=0-0` höchstens ein Byte.
 - Nach dem Stream-Download prüft WordPress den tatsächlichen Dateityp erneut.
 - Artikelbilder bleiben extern und werden nicht in die Mediathek kopiert.
 - Admin-Aktionen erfordern `manage_options` und eine aktionsspezifische Nonce.
 - Der Wipe ist zusätzlich durch eine Bestätigungsabfrage geschützt und löscht die Kategorie nur unbenutzt.
 - Interne Fehler-, Download- und Statusmetadaten werden nicht öffentlich über REST exponiert.
-- Der Videoblock gibt ausschließlich lokal importierte MP4-Dateien aus.
+- Der Videoblock gibt ausschließlich lokal importierte MP4-Dateien und WebVTT-Untertitel aus.
 
 ## Parserdrift
 

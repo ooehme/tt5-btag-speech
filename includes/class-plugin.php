@@ -23,19 +23,24 @@ final class Plugin {
 
 		$settings       = new Settings();
 		$urls           = new URL_Resolver();
+		$subtitles      = new Subtitle_Service( $urls );
 		$repository     = new Speech_Repository();
 		$source         = new Source_Client( $urls, new List_Parser(), new Video_Parser(), new Article_Parser() );
 		$validator      = new MP4_Validator( $settings, $urls );
 		$downloads      = new Download_Service(
 			$validator,
 			$repository,
-			new Download_Lock()
+			new Download_Lock(),
+			$settings,
+			$urls,
+			$subtitles
 		);
 		$sync           = new Synchronizer( $settings, $source, $repository, new Sync_Lock() );
 		$wipe           = new Wipe_Service();
 
 		add_action( 'init', array( $this, 'load_textdomain' ), 0 );
 		add_action( 'admin_init', array( $settings, 'register' ) );
+		$subtitles->register();
 
 		( new Speech_Post_Type() )->register();
 		( new Legacy_Article_Image_Cleanup() )->register();
@@ -45,7 +50,7 @@ final class Plugin {
 		( new CLI( $sync, $downloads, $repository ) )->register();
 
 		if ( is_admin() ) {
-			( new Admin( $settings, $sync, $downloads, $repository, $wipe ) )->register();
+			( new Admin( $settings, $sync, $downloads, $repository, $wipe, new Speaker_Catalog() ) )->register();
 		}
 	}
 

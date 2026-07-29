@@ -4,6 +4,7 @@
  *
  * @var array<string,mixed> $settings
  * @var array<int,\WP_Post> $speeches
+ * @var array<int,array{name:string,rednerId:string}> $speakers
  * @var array<string,mixed> $last_sync
  * @var bool                $wipe_paused
  * @var mixed               $notice
@@ -54,7 +55,15 @@ defined( 'ABSPATH' ) || exit;
 		<table class="form-table" role="presentation">
 			<tr>
 				<th scope="row"><label for="mdb-speaker-id"><?php esc_html_e( 'Bundestag-Redner-ID', 'mdb-bundestag-speeches' ); ?></label></th>
-				<td><input id="mdb-speaker-id" name="mdb_speeches_settings[speaker_id]" type="text" inputmode="numeric" pattern="[0-9]+" value="<?php echo esc_attr( (string) $settings['speaker_id'] ); ?>" class="regular-text" required></td>
+				<td>
+					<input id="mdb-speaker-id" name="mdb_speeches_settings[speaker_id]" type="text" inputmode="numeric" pattern="[0-9]+" list="mdb-speaker-options" autocomplete="off" value="<?php echo esc_attr( (string) $settings['speaker_id'] ); ?>" class="regular-text" required>
+					<datalist id="mdb-speaker-options">
+						<?php foreach ( $speakers as $speaker ) : ?>
+							<option value="<?php echo esc_attr( $speaker['rednerId'] ); ?>" label="<?php echo esc_attr( $speaker['name'] ); ?>"><?php echo esc_html( $speaker['name'] ); ?></option>
+						<?php endforeach; ?>
+					</datalist>
+					<p class="description"><?php esc_html_e( 'Redner auswählen oder eine numerische Redner-ID manuell eingeben.', 'mdb-bundestag-speeches' ); ?></p>
+				</td>
 			</tr>
 			<tr>
 				<th scope="row"><label for="mdb-speaker-filter"><?php esc_html_e( 'Redenlisten-Filter-IDs', 'mdb-bundestag-speeches' ); ?></label></th>
@@ -88,9 +97,9 @@ defined( 'ABSPATH' ) || exit;
 				<td>
 					<select id="mdb-quality" name="mdb_speeches_settings[quality]">
 						<option value="1080p_8000" <?php selected( $settings['quality'], '1080p_8000' ); ?>>1080p / 8 Mbit/s</option>
-						<option value="360p_1000" <?php selected( $settings['quality'], '360p_1000' ); ?>>360p / 1 Mbit/s</option>
+						<option value="1080p_5000" <?php selected( $settings['quality'], '1080p_5000' ); ?>>1080p / 5 Mbit/s</option>
 					</select>
-					<p class="description"><?php esc_html_e( 'Nicht verfügbare Varianten werden als Downloadfehler protokolliert.', 'mdb-bundestag-speeches' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Falls die gewählte Variante fehlt, wird automatisch die andere 1080p-Variante versucht.', 'mdb-bundestag-speeches' ); ?></p>
 				</td>
 			</tr>
 			<tr>
@@ -120,7 +129,7 @@ defined( 'ABSPATH' ) || exit;
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="mdb_speeches_download">
 			<?php wp_nonce_field( 'mdb_speeches_download' ); ?>
-			<?php submit_button( __( 'Lokale Downloads starten', 'mdb-bundestag-speeches' ), 'secondary', 'submit', false ); ?>
+			<?php submit_button( __( 'Lokale Downloads und Untertitel starten', 'mdb-bundestag-speeches' ), 'secondary', 'submit', false ); ?>
 		</form>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="mdb_speeches_retry">

@@ -16,15 +16,18 @@ final class ProjectTest extends TestCase {
 			'cli',
 			'cron',
 			'download-service',
+			'download-lock',
 			'legacy-article-image-cleanup',
 			'list-parser',
 			'mp4-validator',
 			'plugin',
 			'release-updater',
 			'settings',
+			'speaker-catalog',
 			'source-client',
 			'speech-repository',
 			'speech-video-renderer',
+			'subtitle-service',
 			'synchronizer',
 			'url-resolver',
 			'video-parser',
@@ -38,7 +41,7 @@ final class ProjectTest extends TestCase {
 	public function test_block_metadata_and_release_versions_are_consistent(): void {
 		foreach ( array( 'speech-video', 'speech-topic', 'speech-session', 'speech-source-link' ) as $block ) {
 			$metadata = json_decode( (string) file_get_contents( MDB_SPEECHES_DIR . 'blocks/' . $block . '/block.json' ), true );
-			self::assertSame( '2.0.5', $metadata['version'] );
+			self::assertSame( '2.0.6', $metadata['version'] );
 			self::assertSame( 3, $metadata['apiVersion'] );
 			self::assertTrue( in_array( 'postId', $metadata['usesContext'], true ) );
 		}
@@ -46,10 +49,10 @@ final class ProjectTest extends TestCase {
 		$plugin  = (string) file_get_contents( MDB_SPEECHES_DIR . 'mdb-bundestag-speeches.php' );
 		$readme  = (string) file_get_contents( MDB_SPEECHES_DIR . 'readme.txt' );
 		$release = (string) file_get_contents( MDB_SPEECHES_DIR . '.github/workflows/release.yml' );
-		self::assertStringContainsString( '* Version:           2.0.5', $plugin );
+		self::assertStringContainsString( '* Version:           2.0.6', $plugin );
 		self::assertStringContainsString( '* Plugin URI:        https://oliveroehme.de/werkzeuge/tt5-btag-speech/', $plugin );
 		self::assertStringContainsString( '* Author URI:        https://oliveroehme.de/', $plugin );
-		self::assertStringContainsString( 'Stable tag: 2.0.5', $readme );
+		self::assertStringContainsString( 'Stable tag: 2.0.6', $readme );
 		self::assertStringContainsString( 'mdb-bundestag-speeches-${version}.zip', $release );
 	}
 }

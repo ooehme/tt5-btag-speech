@@ -4,7 +4,7 @@ Tags: bundestag, speeches, video, gutenberg, query loop
 Requires at least: 6.7
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.0.5
+Stable tag: 2.0.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,6 +20,8 @@ Funktionen:
 * Artikeltitel als Beitragstitel mit bereinigtem Videotitel als Fallback
 * automatischer oder manuell gestarteter lokaler Download
 * sicherer, gestreamter MP4-Import
+* automatische 1080p-Fallbacks zwischen 8 und 5 Mbit/s
+* lokale deutsche Untertitel als WebVTT im Videoplayer
 * WP-Cron, Download-Wiederholung und WP-CLI
 * dynamische Video-, TOP-, Sitzungs- und Quellenblöcke
 * native Bundestagsreden-Variation von core/query
@@ -53,6 +55,11 @@ Der Link zur Originalquelle bleibt verfügbar. Fehlgeschlagene Downloads können
 Plugin-Einstellungen, Locks und Cronjobs werden entfernt. Synchronisierte Beiträge und Medien bleiben als redaktionelle Inhalte erhalten.
 
 == Changelog ==
+
+= 2.0.6 =
+* Ergänzt automatische MP4-Fallbacks zwischen den hochwertigen 1080p-Varianten.
+* Lädt Bundestag-SRT-Untertitel, konvertiert sie in WebVTT und bindet sie in den lokalen Player ein.
+* Ergänzt eine Rednerauswahl aus der mitgelieferten JSON bei weiterhin freier ID-Eingabe.
 
 = 2.0.5 =
 * Verhindert kollabierende Videorahmen bei verzögerten Block-Styles und Video-Lazy-Loading.

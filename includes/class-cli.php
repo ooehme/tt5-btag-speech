@@ -37,7 +37,7 @@ final class CLI {
 	}
 
 	/**
-	 * Lädt alle verfügbaren, noch nicht lokal gespeicherten Reden.
+	 * Lädt verfügbare Videos und ergänzt fehlende Untertitel.
 	 */
 	public function download(): void {
 		$ids     = $this->repository->ids_by_status(
@@ -45,6 +45,7 @@ final class CLI {
 				Sync_Status::DOWNLOAD_AVAILABLE,
 				Sync_Status::DOWNLOAD_PENDING,
 				Sync_Status::DOWNLOAD_FAILED,
+				Sync_Status::DOWNLOADED,
 			)
 		);
 		$success = 0;

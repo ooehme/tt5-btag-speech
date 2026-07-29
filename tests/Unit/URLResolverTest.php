@@ -21,6 +21,20 @@ final class URLResolverTest extends TestCase {
 		);
 	}
 
+	public function test_high_quality_fallbacks_and_subtitle_url(): void {
+		$resolver = new URL_Resolver();
+		$urls     = $resolver->download_urls( '7612848', '1080p_8000' );
+
+		self::assertCount( 2, $urls );
+		self::assertStringContainsString( '_1080_8000kb_', $urls[0] );
+		self::assertStringContainsString( '_1080_5000kb_', $urls[1] );
+		self::assertStringNotContainsString( '_360_', implode( ' ', $urls ) );
+		self::assertSame(
+			'https://cldf-od.r53.cdn.tv1.eu/1000153copo/ondemand/app144277506/145293313/7612848/7612848.srt',
+			$resolver->subtitle_url( '7612848' )
+		);
+	}
+
 	public function test_speaker_id_is_dynamic(): void {
 		$url = ( new URL_Resolver() )->list_url( '99999', '88888 OR 99999' );
 		self::assertStringContainsString( 'rednerId=99999', $url );

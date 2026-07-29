@@ -17,7 +17,7 @@ final class URL_Resolver {
 	public static function quality_profiles(): array {
 		return array(
 			'1080p_8000' => 'h264_1920_1080_8000kb_baseline_de_8000',
-			'360p_1000'  => 'h264_640_360_1000kb_baseline_de_1000',
+			'1080p_5000' => 'h264_1920_1080_5000kb_baseline_de_5000',
 		);
 	}
 
@@ -57,6 +57,31 @@ final class URL_Resolver {
 
 		$file = $video_id . '_' . $profiles[ $quality ] . '.mp4';
 		return self::CDN_BASE . '/' . $video_id . '/' . rawurlencode( $file ) . '?fdl=1';
+	}
+
+	/**
+	 * Returns compatible high-quality variants in preferred order.
+	 *
+	 * @return array<int,string>
+	 */
+	public function download_urls( string $video_id, string $quality = '1080p_8000' ): array {
+		$fallbacks = array(
+			'1080p_8000' => array( '1080p_8000', '1080p_5000' ),
+			'1080p_5000' => array( '1080p_5000', '1080p_8000' ),
+		);
+		if ( ! isset( $fallbacks[ $quality ] ) ) {
+			throw new InvalidArgumentException( 'Unknown video quality profile.' );
+		}
+
+		return array_map(
+			fn ( string $candidate ): string => $this->download_url( $video_id, $candidate ),
+			$fallbacks[ $quality ]
+		);
+	}
+
+	public function subtitle_url( string $video_id ): string {
+		$video_id = $this->numeric_id( $video_id, 'video' );
+		return self::CDN_BASE . '/' . $video_id . '/' . rawurlencode( $video_id . '.srt' );
 	}
 
 	public function absolute_bundestag_url( string $url ): string {

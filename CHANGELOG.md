@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.6 – 2026-07-29
+
+- automatische MP4-Fallbacks zwischen den hochwertigen 1080p-Varianten mit 8 und 5 Mbit/s
+- Bundestag-SRT-Untertitel werden lokal geladen, als WebVTT gespeichert und in den Videoplayer eingebunden
+- Rednerauswahl aus dem mitgelieferten JSON-Katalog bei weiterhin möglicher freier ID-Eingabe
+
 ## 2.0.5 – 2026-07-29
 
 - Videorahmen behalten ihre Höhe auch bei verzögerten Block-Styles und Video-Lazy-Loading
