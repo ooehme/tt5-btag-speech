@@ -16,6 +16,7 @@ Produktionsfähiges WordPress-Plugin zum Synchronisieren und Darstellen von Rede
 - Beitragsdatum aus dem `date`-Metatag der Bundestag-Videoseite
 - lokales Video als Inhalt jedes importierten Beitrags
 - automatische Kategorie `Bundestagsrede`
+- geschützter Komplett-Wipe für Beiträge, Medien und Legacy-Daten
 - optionale Click-to-load-Ausgabe
 - GitHub-Release-Updates, sobald Releases im Repository verfügbar sind
 

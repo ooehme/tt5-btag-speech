@@ -16,6 +16,10 @@
 
 Fehlgeschlagene Downloads können gesammelt neu eingeplant werden.
 
+## Vollständiger Neustart
+
+Unter **Bundestagsreden → Synchronisierung → Gefahrenzone** entfernt der Komplett-Wipe alle synchronisierten Reden, eindeutig zugehörigen Medien, Downloadjobs, Locks und Plugin-Einstellungen. Die Kategorie `Bundestagsrede` wird nur gelöscht, wenn sie nicht anderweitig verwendet wird. Der automatische Abgleich bleibt danach pausiert, bis ein manueller Abgleich gestartet wird.
+
 ## Cron
 
 WP-Cron muss auf der Website funktionieren. Für wenig besuchte Installationen empfiehlt sich ein echter System-Cron, der regelmäßig `wp-cron.php` aufruft.

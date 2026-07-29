@@ -24,6 +24,8 @@ final class Synchronizer {
 			return new WP_Error( 'mdb_sync_locked', __( 'Eine Synchronisierung läuft bereits.', 'mdb-bundestag-speeches' ) );
 		}
 
+		delete_option( Wipe_Service::PAUSE_OPTION );
+
 		$summary = array(
 			'created' => 0,
 			'updated' => 0,

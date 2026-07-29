@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/phpunit-shim.php';
 
 define( 'ABSPATH', dirname( __DIR__ ) . DIRECTORY_SEPARATOR );
-define( 'MDB_SPEECHES_VERSION', '2.0.0' );
+define( 'MDB_SPEECHES_VERSION', '2.0.1' );
 define( 'MDB_SPEECHES_DIR', dirname( __DIR__ ) . DIRECTORY_SEPARATOR );
 define( 'MDB_SPEECHES_URL', 'https://example.test/wp-content/plugins/mdb-bundestag-speeches/' );
 define( 'MDB_SPEECHES_FILE', MDB_SPEECHES_DIR . 'mdb-bundestag-speeches.php' );
@@ -81,6 +81,12 @@ $GLOBALS['mdb_test_options']        = array();
 $GLOBALS['mdb_http_head']           = null;
 $GLOBALS['mdb_http_get']            = null;
 $GLOBALS['mdb_http_get_queue']      = array();
+$GLOBALS['mdb_test_get_posts_queue'] = array();
+$GLOBALS['mdb_test_deleted_posts']   = array();
+$GLOBALS['mdb_test_deleted_media']   = array();
+$GLOBALS['mdb_test_deleted_options'] = array();
+$GLOBALS['mdb_test_cleared_hooks']   = array();
+$GLOBALS['mdb_test_cron_array']      = array();
 
 function __( string $text, string $domain = '' ): string {
 	return $text;
@@ -146,6 +152,26 @@ function update_post_meta( int $post_id, string $key, mixed $value ): void {
 function delete_post_meta( int $post_id, string $key ): void {
 	unset( $GLOBALS['mdb_test_meta'][ $post_id ][ $key ] );
 }
+function update_option( string $option, mixed $value, bool|null $autoload = null ): bool {
+	$GLOBALS['mdb_test_options'][ $option ] = $value;
+	return true;
+}
+function delete_option( string $option ): bool {
+	$GLOBALS['mdb_test_deleted_options'][] = $option;
+	unset( $GLOBALS['mdb_test_options'][ $option ] );
+	return true;
+}
+function delete_site_transient( string $transient ): bool {
+	$GLOBALS['mdb_test_deleted_options'][] = '_site_transient_' . $transient;
+	return true;
+}
+function wp_clear_scheduled_hook( string $hook, array $args = array(), bool $wp_error = false ): int|false|WP_Error {
+	$GLOBALS['mdb_test_cleared_hooks'][] = array( $hook, $args );
+	return 1;
+}
+function _get_cron_array(): array {
+	return $GLOBALS['mdb_test_cron_array'];
+}
 function term_exists( int|string $term, string $taxonomy = '', int $parent = 0 ): array|int|null {
 	foreach ( $GLOBALS['mdb_test_taxonomy_terms'][ $taxonomy ] ?? array() as $term_id => $stored ) {
 		if ( (string) $term === (string) $term_id || (string) $term === $stored['name'] || (string) $term === $stored['slug'] ) {
@@ -166,11 +192,29 @@ function wp_set_object_terms( int $object_id, string|int|array $terms, string $t
 	$GLOBALS['mdb_test_terms'][ $object_id ][ $taxonomy ] = (array) $terms;
 	return array_map( 'intval', (array) $terms );
 }
+function get_term_by( string $field, string|int $value, string $taxonomy = '', string $output = 'OBJECT', string $filter = 'raw' ): object|array|false {
+	return $GLOBALS['mdb_test_term_by'] ?? false;
+}
+function wp_delete_term( int $term_id, string $taxonomy, array $args = array() ): bool|int|WP_Error {
+	$GLOBALS['mdb_test_deleted_terms'][] = array( $term_id, $taxonomy );
+	return true;
+}
 function get_post_type( int $post_id ): string|false {
 	return $GLOBALS['mdb_test_post_types'][ $post_id ] ?? false;
 }
 function get_posts( array $args = array() ): array {
+	if ( ! empty( $GLOBALS['mdb_test_get_posts_queue'] ) ) {
+		return (array) array_shift( $GLOBALS['mdb_test_get_posts_queue'] );
+	}
 	return array();
+}
+function wp_delete_attachment( int $post_id, bool $force_delete = false ): object|false|null {
+	$GLOBALS['mdb_test_deleted_media'][] = $post_id;
+	return (object) array( 'ID' => $post_id );
+}
+function wp_delete_post( int $post_id, bool $force_delete = false ): object|false|null {
+	$GLOBALS['mdb_test_deleted_posts'][] = $post_id;
+	return (object) array( 'ID' => $post_id );
 }
 function wp_get_attachment_url( int $attachment_id ): string|false {
 	return $GLOBALS['mdb_test_attachments'][ $attachment_id ] ?? false;

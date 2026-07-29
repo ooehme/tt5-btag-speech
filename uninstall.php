@@ -31,6 +31,7 @@ $cleanup = static function (): void {
 	delete_option( 'mdb_speeches_settings' );
 	delete_option( 'mdb_speeches_last_sync' );
 	delete_option( 'mdb_speeches_sync_lock' );
+	delete_option( 'mdb_speeches_wipe_paused' );
 	delete_site_transient( 'mdb_speeches_github_release' );
 };
 

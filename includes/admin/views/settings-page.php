@@ -5,6 +5,7 @@
  * @var array<string,mixed> $settings
  * @var array<int,\WP_Post> $speeches
  * @var array<string,mixed> $last_sync
+ * @var bool                $wipe_paused
  * @var mixed               $notice
  */
 
@@ -16,6 +17,12 @@ defined( 'ABSPATH' ) || exit;
 	<?php if ( is_array( $notice ) && ! empty( $notice['message'] ) ) : ?>
 		<div class="notice <?php echo esc_attr( 'success' === $notice['type'] ? 'notice-success' : 'notice-error' ); ?> is-dismissible">
 			<p><?php echo esc_html( (string) $notice['message'] ); ?></p>
+		</div>
+	<?php endif; ?>
+
+	<?php if ( $wipe_paused ) : ?>
+		<div class="notice notice-warning">
+			<p><?php esc_html_e( 'Der automatische Abgleich ist nach dem Komplett-Wipe pausiert. „Jetzt synchronisieren“ hebt die Pause auf.', 'mdb-bundestag-speeches' ); ?></p>
 		</div>
 	<?php endif; ?>
 
@@ -113,6 +120,19 @@ defined( 'ABSPATH' ) || exit;
 			<?php submit_button( __( 'Fehlgeschlagene Downloads erneut starten', 'mdb-bundestag-speeches' ), 'secondary', 'submit', false ); ?>
 		</form>
 	</div>
+
+	<hr>
+	<h2><?php esc_html_e( 'Gefahrenzone', 'mdb-bundestag-speeches' ); ?></h2>
+	<p><?php esc_html_e( 'Löscht unwiderruflich alle synchronisierten Bundestagsreden, zugehörigen Medien, Legacy-Daten und Plugin-Einstellungen.', 'mdb-bundestag-speeches' ); ?></p>
+	<form
+		method="post"
+		action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+		onsubmit="return confirm('<?php echo esc_attr__( 'Wirklich alle Bundestagsreden und zugehörigen Medien unwiderruflich löschen?', 'mdb-bundestag-speeches' ); ?>');"
+	>
+		<input type="hidden" name="action" value="mdb_speeches_wipe">
+		<?php wp_nonce_field( 'mdb_speeches_wipe' ); ?>
+		<?php submit_button( __( 'Plugin-Daten vollständig zurücksetzen', 'mdb-bundestag-speeches' ), 'delete', 'submit', false ); ?>
+	</form>
 
 	<h2><?php esc_html_e( 'Status', 'mdb-bundestag-speeches' ); ?></h2>
 	<table class="widefat striped">

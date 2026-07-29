@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.1 – 2026-07-29
+
+- geschützter Backend-Wipe für synchronisierte Beiträge, Plugin-Medien, Legacy-Locks und Einstellungen
+- ungenutzte Kategorie „Bundestagsrede“ wird beim Wipe entfernt
+- verwaiste Download-Cronjobs werden mitsamt ihren Locks entfernt; der automatische Abgleich bleibt bis zum nächsten manuellen Start pausiert
+
 ## 2.0.0 – 2026-07-29
 
 - Bundestag-Embeds und alle zugehörigen Darstellungsoptionen entfernt

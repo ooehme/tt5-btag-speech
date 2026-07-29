@@ -4,7 +4,7 @@ Tags: bundestag, speeches, video, gutenberg, query loop
 Requires at least: 6.7
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,10 @@ Der Link zur Originalquelle bleibt verfügbar. Fehlgeschlagene Downloads können
 Plugin-Einstellungen, Locks und Cronjobs werden entfernt. Synchronisierte Beiträge und Medien bleiben als redaktionelle Inhalte erhalten.
 
 == Changelog ==
+
+= 2.0.1 =
+* Ergänzt einen geschützten Komplett-Wipe für Beiträge, Medien und Legacy-Daten.
+* Entfernt verwaiste Download-Cronjobs und Locks; der Neuimport bleibt bis zum manuellen Abgleich pausiert.
 
 = 2.0.0 =
 * Entfernt alle Bundestag-Embeds und zugehörigen Optionen.

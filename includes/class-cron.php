@@ -35,6 +35,10 @@ final class Cron {
 	}
 
 	public function maybe_schedule(): void {
+		if ( (bool) get_option( Wipe_Service::PAUSE_OPTION, false ) ) {
+			return;
+		}
+
 		if ( false === wp_next_scheduled( self::SYNC_HOOK ) ) {
 			wp_schedule_event( time() + MINUTE_IN_SECONDS, (string) $this->settings->get( 'interval' ), self::SYNC_HOOK );
 		}

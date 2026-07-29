@@ -13,7 +13,8 @@ final class Admin {
 		private Settings $settings,
 		private Synchronizer $synchronizer,
 		private Download_Service $downloads,
-		private Speech_Repository $repository
+		private Speech_Repository $repository,
+		private Wipe_Service $wipe_service
 	) {}
 
 	public function register(): void {
@@ -21,6 +22,7 @@ final class Admin {
 		add_action( 'admin_post_mdb_speeches_sync', array( $this, 'sync' ) );
 		add_action( 'admin_post_mdb_speeches_retry', array( $this, 'retry' ) );
 		add_action( 'admin_post_mdb_speeches_download', array( $this, 'download' ) );
+		add_action( 'admin_post_mdb_speeches_wipe', array( $this, 'wipe' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( MDB_SPEECHES_FILE ), array( $this, 'action_links' ) );
 	}
 
@@ -37,10 +39,11 @@ final class Admin {
 
 	public function page(): void {
 		$this->guard();
-		$settings  = $this->settings->all();
-		$speeches  = $this->repository->recent();
-		$last_sync = get_option( 'mdb_speeches_last_sync', array() );
-		$notice    = get_transient( $this->notice_key() );
+		$settings    = $this->settings->all();
+		$speeches    = $this->repository->recent();
+		$last_sync   = get_option( 'mdb_speeches_last_sync', array() );
+		$wipe_paused = (bool) get_option( Wipe_Service::PAUSE_OPTION, false );
+		$notice      = get_transient( $this->notice_key() );
 		delete_transient( $this->notice_key() );
 
 		require MDB_SPEECHES_DIR . 'includes/admin/views/settings-page.php';
@@ -91,6 +94,21 @@ final class Admin {
 				$result['queued']
 			)
 		);
+	}
+
+	public function wipe(): void {
+		$this->guard();
+		check_admin_referer( 'mdb_speeches_wipe' );
+		$result = $this->wipe_service->wipe();
+
+		$message = sprintf(
+			/* translators: 1: deleted posts, 2: deleted attachments, 3: failures. */
+			__( 'Zurückgesetzt: %1$d Beiträge und %2$d Mediendateien gelöscht. Fehler: %3$d. Automatischer Abgleich pausiert.', 'mdb-bundestag-speeches' ),
+			$result['posts'],
+			$result['attachments'],
+			$result['failed']
+		);
+		$this->redirect( $result['failed'] > 0 ? 'error' : 'success', $message );
 	}
 
 	/**

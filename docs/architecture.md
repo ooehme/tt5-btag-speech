@@ -18,6 +18,7 @@ Das Plugin trennt Quelle, Persistenz, Synchronisierung, Download und Ausgabe. Es
 - `Download_Service` streamt mit WordPress-Funktionen in die Mediathek.
 - `Article_Image_Importer` validiert, begrenzt und dedupliziert lokale Artikelbilder.
 - `Download_Lock` verhindert doppelte Attachments bei parallelen Jobs.
+- `Wipe_Service` entfernt ausschließlich Plugin-Beiträge, zugehörige Medien und Legacy-Zustände.
 - `Cron` plant Metadaten und einzelne Downloads getrennt.
 - `Admin` verarbeitet ausschließlich berechtigte, Nonce-geschützte Aktionen; die View ist separat.
 - `CLI` stellt die drei WP-CLI-Kommandos bereit.
@@ -62,6 +63,7 @@ Metadatenfehler und Downloadfehler bleiben getrennt. Eine erfolgreiche Metadaten
 - Nach dem Stream-Download prüft WordPress den tatsächlichen Dateityp erneut.
 - Artikelbilder sind auf Bundestag-Hosts, JPEG/PNG/WebP und 15 MB begrenzt.
 - Admin-Aktionen erfordern `manage_options` und eine aktionsspezifische Nonce.
+- Der Wipe ist zusätzlich durch eine Bestätigungsabfrage geschützt und löscht die Kategorie nur unbenutzt.
 - Interne Fehler-, Download- und Statusmetadaten werden nicht öffentlich über REST exponiert.
 - Der Videoblock gibt ausschließlich lokal importierte MP4-Dateien aus.
 

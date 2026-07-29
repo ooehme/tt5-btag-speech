@@ -34,6 +34,7 @@ final class Plugin {
 			$article_images
 		);
 		$sync           = new Synchronizer( $settings, $source, $repository, new Sync_Lock(), $article_images );
+		$wipe           = new Wipe_Service();
 
 		add_action( 'init', array( $this, 'load_textdomain' ), 0 );
 		add_action( 'admin_init', array( $settings, 'register' ) );
@@ -45,7 +46,7 @@ final class Plugin {
 		( new CLI( $sync, $downloads, $repository ) )->register();
 
 		if ( is_admin() ) {
-			( new Admin( $settings, $sync, $downloads, $repository ) )->register();
+			( new Admin( $settings, $sync, $downloads, $repository, $wipe ) )->register();
 		}
 	}
 
