@@ -16,7 +16,7 @@ Das Plugin trennt Quelle, Persistenz, Synchronisierung, Download und Ausgabe. Es
 - `Sync_Lock` verhindert parallele Metadatenläufe.
 - `MP4_Validator` prüft Host, HTTP-Status, MIME-Type und Größe.
 - `Download_Service` streamt mit WordPress-Funktionen in die Mediathek.
-- `Article_Image_Importer` validiert, begrenzt und dedupliziert lokale Artikelbilder.
+- `Legacy_Article_Image_Cleanup` entfernt einmalig alte Medien mit der eindeutigen Artikelbild-Importmarkierung.
 - `Download_Lock` verhindert doppelte Attachments bei parallelen Jobs.
 - `Wipe_Service` entfernt ausschließlich Plugin-Beiträge, zugehörige Medien und Legacy-Zustände.
 - `Cron` plant Metadaten und einzelne Downloads getrennt.
@@ -37,7 +37,7 @@ Das Plugin trennt Quelle, Persistenz, Synchronisierung, Download und Ausgabe. Es
 5. Ein optionaler Artikel-Link wird aufgelöst; Artikeltitel und Open-Graph-Bild werden gecacht geparst.
 6. `_mdb_video_id` dient als idempotenter Schlüssel.
 7. Der Artikeltitel wird als `post_title` gesetzt; ersatzweise dient der bereinigte Videotitel.
-8. Der Videoblock wird bei leeren Beiträgen als Inhalt gesetzt und das Artikelbild als Beitragsbild importiert.
+8. Der Videoblock wird bei leeren Beiträgen als Inhalt gesetzt; sein Poster nutzt vorrangig ein redaktionelles Beitragsbild und sonst die externe Artikelbild-URL.
 9. Im Modus `automatic` werden einzelne lokale Download-Cronjobs geplant.
 10. Fehler einer Rede stoppen nicht die übrige Synchronisierung.
 11. Fehlende Reden werden nie gelöscht.
@@ -61,7 +61,7 @@ Metadatenfehler und Downloadfehler bleiben getrennt. Eine erfolgreiche Metadaten
 - MP4-Validierung folgt keinen Redirects und akzeptiert ausschließlich `video/mp4`.
 - Der GET-Fallback überträgt mit `Range: bytes=0-0` höchstens ein Byte.
 - Nach dem Stream-Download prüft WordPress den tatsächlichen Dateityp erneut.
-- Artikelbilder sind auf Bundestag-Hosts, JPEG/PNG/WebP und 15 MB begrenzt.
+- Artikelbilder bleiben extern und werden nicht in die Mediathek kopiert.
 - Admin-Aktionen erfordern `manage_options` und eine aktionsspezifische Nonce.
 - Der Wipe ist zusätzlich durch eine Bestätigungsabfrage geschützt und löscht die Kategorie nur unbenutzt.
 - Interne Fehler-, Download- und Statusmetadaten werden nicht öffentlich über REST exponiert.

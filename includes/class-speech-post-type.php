@@ -40,8 +40,6 @@ final class Speech_Post_Type {
 				array(
 					'_mdb_download_url',
 					'_mdb_attachment_id',
-					'_mdb_article_image_id',
-					'_mdb_article_image_error',
 					'_mdb_sync_status',
 					'_mdb_last_seen',
 					'_mdb_last_error',
@@ -75,8 +73,6 @@ final class Speech_Post_Type {
 			'_mdb_article_url'        => 'string',
 			'_mdb_article_title'      => 'string',
 			'_mdb_article_image_url'  => 'string',
-			'_mdb_article_image_id'   => 'integer',
-			'_mdb_article_image_error' => 'string',
 			'_mdb_session'            => 'string',
 			'_mdb_topic'              => 'string',
 			'_mdb_source_date'        => 'string',

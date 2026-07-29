@@ -11,8 +11,7 @@ final class Synchronizer {
 		private Settings $settings,
 		private Source_Client $source,
 		private Speech_Repository $repository,
-		private Sync_Lock $lock,
-		private Article_Image_Importer $article_images
+		private Sync_Lock $lock
 	) {}
 
 	/**
@@ -78,8 +77,6 @@ final class Synchronizer {
 					++$summary['created'];
 				}
 
-				$this->import_article_image( $result, $video_id, $error_messages );
-
 				if ( 'automatic' === $mode && Sync_Status::DOWNLOAD_PENDING === get_post_meta( $result, '_mdb_sync_status', true ) ) {
 					$this->queue_download( $result );
 					++$summary['queued'];
@@ -113,21 +110,6 @@ final class Synchronizer {
 		if ( false === wp_next_scheduled( 'mdb_speeches_download_one', array( $post_id ) ) ) {
 			wp_schedule_single_event( time() + 5, 'mdb_speeches_download_one', array( $post_id ) );
 		}
-	}
-
-	/**
-	 * @param array<int,string> $error_messages Synchronization messages.
-	 */
-	private function import_article_image( int $post_id, string $video_id, array &$error_messages ): void {
-		$result = $this->article_images->import( $post_id );
-		if ( is_wp_error( $result ) ) {
-			$message = sanitize_text_field( $result->get_error_message() );
-			update_post_meta( $post_id, '_mdb_article_image_error', $message );
-			$error_messages[] = $video_id . ' (Beitragsbild): ' . $message;
-			$this->log_error( $result, $video_id );
-			return;
-		}
-		delete_post_meta( $post_id, '_mdb_article_image_error' );
 	}
 
 	private function log_error( WP_Error $error, string $video_id = '' ): void {

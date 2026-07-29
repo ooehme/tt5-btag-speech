@@ -26,20 +26,19 @@ final class Plugin {
 		$repository     = new Speech_Repository();
 		$source         = new Source_Client( $urls, new List_Parser(), new Video_Parser(), new Article_Parser() );
 		$validator      = new MP4_Validator( $settings, $urls );
-		$article_images = new Article_Image_Importer( $urls );
 		$downloads      = new Download_Service(
 			$validator,
 			$repository,
-			new Download_Lock(),
-			$article_images
+			new Download_Lock()
 		);
-		$sync           = new Synchronizer( $settings, $source, $repository, new Sync_Lock(), $article_images );
+		$sync           = new Synchronizer( $settings, $source, $repository, new Sync_Lock() );
 		$wipe           = new Wipe_Service();
 
 		add_action( 'init', array( $this, 'load_textdomain' ), 0 );
 		add_action( 'admin_init', array( $settings, 'register' ) );
 
 		( new Speech_Post_Type() )->register();
+		( new Legacy_Article_Image_Cleanup() )->register();
 		( new Cron( $settings, $sync, $downloads ) )->register();
 		( new Blocks( new Speech_Video_Renderer(), new Block_Renderer() ) )->register();
 		( new Release_Updater() )->register();

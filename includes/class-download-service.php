@@ -10,8 +10,7 @@ final class Download_Service {
 	public function __construct(
 		private MP4_Validator $validator,
 		private Speech_Repository $repository,
-		private Download_Lock $lock,
-		private Article_Image_Importer $article_images
+		private Download_Lock $lock
 	) {}
 
 	/**
@@ -38,8 +37,6 @@ final class Download_Service {
 	 * @return int|WP_Error Attachment ID or error.
 	 */
 	private function download_unlocked( int $post_id ): int|WP_Error {
-		$this->import_article_image( $post_id );
-
 		$attachment_id = (int) get_post_meta( $post_id, '_mdb_attachment_id', true );
 		if ( $attachment_id > 0 && 'attachment' === get_post_type( $attachment_id ) ) {
 			return $attachment_id;
@@ -89,17 +86,6 @@ final class Download_Service {
 		update_post_meta( $post_id, '_mdb_sync_status', Sync_Status::DOWNLOADED );
 		delete_post_meta( $post_id, '_mdb_last_error' );
 		return $attachment_id;
-	}
-
-	private function import_article_image( int $post_id ): void {
-		$result = $this->article_images->import( $post_id );
-		if ( is_wp_error( $result ) ) {
-			$message = sanitize_text_field( $result->get_error_message() );
-			update_post_meta( $post_id, '_mdb_article_image_error', $message );
-			error_log( 'MDB Bundestagsreden (Artikelbild ' . $post_id . '): ' . $message );
-			return;
-		}
-		delete_post_meta( $post_id, '_mdb_article_image_error' );
 	}
 
 	/**

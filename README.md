@@ -12,7 +12,7 @@ Produktionsfähiges WordPress-Plugin zum Synchronisieren und Darstellen von Rede
 - `HEAD`-Prüfung mit begrenztem `Range: bytes=0-0`-Fallback
 - WP-Cron, Synchronisations- und Download-Locks sowie WP-CLI
 - dynamische Gutenberg-Blöcke und eine native `core/query`-Variation
-- Artikelbild als echtes, redaktionell änderbares Beitragsbild
+- Remote-Artikelbild als Video-Poster, mit einem redaktionellen Beitragsbild als Vorrang
 - Beitragsdatum aus `Sitzung vom TT.MM.JJJJ` im Titel der Bundestag-Videoseite
 - lokales Video als Inhalt jedes importierten Beitrags
 - automatische Kategorie `Bundestagsrede`
@@ -48,7 +48,7 @@ Verfügbar sind:
 
 Der Videoblock liest im Core Query Loop den aktuellen `postId`-Kontext. Das `core/post-template` bleibt frei gestaltbar; Pagination übernehmen die Core-Blöcke.
 
-Die Query-Variation bietet Anzahl, Sortierung und Offset. Titel und Videovorschaubild stammen direkt aus Beitragstitel und Beitragsbild. Fehlen Artikelmetadaten, wird der um `: Rede von …` bereinigte Videotitel verwendet.
+Die Query-Variation bietet Anzahl, Sortierung und Offset. Der Video-Poster nutzt vorrangig ein redaktionell gesetztes Beitragsbild und sonst direkt die Artikelbild-URL des Bundestages. Das Artikelbild wird nicht lokal gespeichert. Fehlen Artikelmetadaten, wird der um `: Rede von …` bereinigte Videotitel verwendet.
 
 ## WP-CLI
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MDB\Tests;
 
 use MDB\BundestagSpeeches\Cron;
+use MDB\BundestagSpeeches\Legacy_Article_Image_Cleanup;
 use MDB\BundestagSpeeches\Settings;
 use MDB\BundestagSpeeches\Wipe_Service;
 use PHPUnit\Framework\TestCase;
@@ -34,9 +35,10 @@ final class WipeServiceTest extends TestCase {
 			'count'   => 0,
 		);
 		$GLOBALS['mdb_test_options']         = array(
-			Settings::OPTION           => array( 'speaker_id' => '99999' ),
-			'mdb_speeches_last_sync'   => array( 'time' => 'old' ),
-			'mdb_speeches_sync_lock'   => 'old-lock',
+			Settings::OPTION                      => array( 'speaker_id' => '99999' ),
+			'mdb_speeches_last_sync'              => array( 'time' => 'old' ),
+			'mdb_speeches_sync_lock'              => 'old-lock',
+			Legacy_Article_Image_Cleanup::OPTION => MDB_SPEECHES_VERSION,
 		);
 
 		$result = ( new Wipe_Service() )->wipe();
@@ -68,5 +70,6 @@ final class WipeServiceTest extends TestCase {
 		self::assertTrue( $GLOBALS['mdb_test_options'][ Wipe_Service::PAUSE_OPTION ] );
 		self::assertFalse( isset( $GLOBALS['mdb_test_options']['mdb_speeches_last_sync'] ) );
 		self::assertFalse( isset( $GLOBALS['mdb_test_options']['mdb_speeches_sync_lock'] ) );
+		self::assertFalse( isset( $GLOBALS['mdb_test_options'][ Legacy_Article_Image_Cleanup::OPTION ] ) );
 	}
 }

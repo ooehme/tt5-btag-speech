@@ -58,7 +58,11 @@ final class Speech_Video_Renderer {
 
 	private function poster( int $post_id ): string {
 		$url = get_the_post_thumbnail_url( $post_id, 'full' );
-		return is_string( $url ) ? $url : '';
+		if ( is_string( $url ) && '' !== $url ) {
+			return $url;
+		}
+
+		return (string) get_post_meta( $post_id, '_mdb_article_image_url', true );
 	}
 
 	/**
