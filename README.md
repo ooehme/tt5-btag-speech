@@ -1,5 +1,10 @@
 # MDB Bundestagsreden
 
+[![Quality](https://github.com/ooehme/tt5-btag-speech/actions/workflows/quality.yml/badge.svg)](https://github.com/ooehme/tt5-btag-speech/actions/workflows/quality.yml)
+[![Release](https://img.shields.io/github/v/release/ooehme/tt5-btag-speech)](https://github.com/ooehme/tt5-btag-speech/releases/latest)
+[![License](https://img.shields.io/github/license/ooehme/tt5-btag-speech)](LICENSE)
+[![WordPress](https://img.shields.io/badge/WordPress-%E2%89%A5_6.7-21759B?logo=wordpress&logoColor=white)](#anforderungen)
+
 Produktionsfähiges WordPress-Plugin zum Synchronisieren und Darstellen von Reden aus der Mediathek des Deutschen Bundestages.
 
 ## Funktionen
